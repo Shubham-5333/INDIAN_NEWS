@@ -20,7 +20,7 @@ import {
   Award
 } from 'lucide-react';
 import { ArticleCard } from '../components/news/ArticleCard';
-import { api } from '../api/client';
+import { api, formatImageUrl } from '../api/client';
 import { FEATURED_LEAD_ARTICLE, TOP_STORIES, OPINION_PIECES } from '../data/mockData';
 
 export const SearchPage = ({
@@ -83,7 +83,7 @@ export const SearchPage = ({
             }),
             rawDate: new Date(item.createdAt || Date.now()),
             readTime: item.readTime || '4 min read',
-            imageUrl: item.featuredImage || item.imageUrl || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1200',
+            imageUrl: formatImageUrl(item.featuredImage || item.imageUrl || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1200'),
             imageCaption: item.imageCaption || '',
             isLive: Boolean(item.isLive),
             isBreaking: Boolean(item.isBreaking),

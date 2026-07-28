@@ -3,7 +3,7 @@ import { BreakingTicker } from '../components/news/BreakingTicker';
 import { MarketTicker } from '../components/news/MarketTicker';
 import { ArticleCard } from '../components/news/ArticleCard';
 import { ArrowRight, Newspaper } from 'lucide-react';
-import { api } from '../api/client';
+import { api, formatImageUrl } from '../api/client';
 import { FEATURED_LEAD_ARTICLE, TOP_STORIES, OPINION_PIECES, BREAKING_NEWS_TICKER } from '../data/mockData';
 
 export const HomePage = ({
@@ -36,7 +36,7 @@ export const HomePage = ({
               day: 'numeric',
             }),
             readTime: item.readTime || '4 min read',
-            imageUrl: item.featuredImage || item.imageUrl || '',
+            imageUrl: formatImageUrl(item.featuredImage || item.imageUrl || ''),
             imageCaption: item.imageCaption || '',
             isLive: Boolean(item.isLive),
             isBreaking: Boolean(item.isBreaking),

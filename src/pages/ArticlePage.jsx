@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Share2, Calendar, Clock, Eye, ArrowLeft } from 'lucide-react';
 import { CommentSection } from '../components/news/CommentSection';
+import { formatImageUrl } from '../api/client';
 
 export const ArticlePage = ({
   article,
@@ -31,6 +32,8 @@ export const ArticlePage = ({
       setEmail('');
     }
   };
+
+  const articleImgSrc = formatImageUrl(article.imageUrl || article.featuredImage);
 
   return (
     <div className="w-full flex-1 bg-background font-sans text-on-surface">
@@ -70,10 +73,10 @@ export const ArticlePage = ({
           </header>
 
           {/* Lead Image */}
-          {article.imageUrl && (
+          {articleImgSrc && (
             <div className="mb-stack-lg relative">
               <img
-                src={article.imageUrl}
+                src={articleImgSrc}
                 alt={article.title}
                 className="w-full aspect-[16/9] object-cover border border-outline-variant"
               />

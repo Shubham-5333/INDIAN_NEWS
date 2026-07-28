@@ -1,5 +1,6 @@
 import React from 'react';
 import { Share2 } from 'lucide-react';
+import { formatImageUrl } from '../../api/client';
 
 export const ArticleCard = ({
   article,
@@ -7,13 +8,15 @@ export const ArticleCard = ({
   onSelect,
   onShare,
 }) => {
+  const imgSrc = formatImageUrl(article.imageUrl || article.featuredImage);
+
   // Hero Lead Article Variant
   if (variant === 'hero') {
     return (
       <article className="group cursor-pointer" onClick={() => onSelect(article)}>
         <div className="relative overflow-hidden border border-on-surface mb-stack-md">
           <img
-            src={article.imageUrl}
+            src={imgSrc}
             alt={article.title}
             className="w-full aspect-[16/9] object-cover transition-transform duration-700 group-hover:scale-105"
           />
@@ -62,7 +65,7 @@ export const ArticleCard = ({
       >
         <div className="border border-on-surface mb-3 overflow-hidden aspect-video">
           <img
-            src={article.imageUrl}
+            src={imgSrc}
             alt={article.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform"
           />
@@ -117,7 +120,7 @@ export const ArticleCard = ({
 
       <div className="w-24 h-24 flex-shrink-0 border border-on-surface overflow-hidden">
         <img
-          src={article.imageUrl}
+          src={imgSrc}
           alt={article.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform"
         />

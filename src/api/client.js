@@ -3,6 +3,19 @@ import { FEATURED_LEAD_ARTICLE, TOP_STORIES, OPINION_PIECES } from '../data/mock
 const rawBaseUrl = import.meta.env.VITE_API_URL || 'https://indian-news-server-eo2m.onrender.com/api';
 const API_BASE_URL = rawBaseUrl.replace(/\/+$/, '');
 
+export const formatImageUrl = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  const serverHost = API_BASE_URL.replace(/\/api\/?$/, '');
+  
+  if (url.includes('localhost:5001')) {
+    return url.replace(/http:\/\/localhost:5001/g, serverHost);
+  }
+  if (url.startsWith('/uploads/')) {
+    return `${serverHost}${url}`;
+  }
+  return url;
+};
+
 export const getAuthToken = () => localStorage.getItem('adminToken');
 export const setAuthToken = (token) => localStorage.setItem('adminToken', token);
 export const removeAuthToken = () => localStorage.removeItem('adminToken');
@@ -68,7 +81,7 @@ const getMockNewsFormatted = () => {
     author: item.author || { name: 'Editorial Desk', role: 'Staff Reporter' },
     createdAt: new Date().toISOString(),
     readTime: item.readTime || '4 min read',
-    featuredImage: item.featuredImage || '',
+    featuredImage: formatImageUrl(item.featuredImage || ''),
     imageCaption: item.imageCaption || '',
     isLive: Boolean(item.isLive),
     isBreaking: Boolean(item.isBreaking),
@@ -108,6 +121,10 @@ export const api = {
       const query = new URLSearchParams(params).toString();
       const res = await request(`/news${query ? `?${query}` : ''}`);
       if (res && res.news && res.news.length > 0) {
+        res.news = res.news.map((item) => ({
+          ...item,
+          featuredImage: formatImageUrl(item.featuredImage),
+        }));
         return res;
       }
       return getMockNewsFormatted();
@@ -117,7 +134,15 @@ export const api = {
   },
   getNewsBySlug: async (slug) => {
     try {
-      return await request(`/news/${slug}`);
+      const res = await request(`/news/${slug}`);
+      if (res) {
+        if (res.news) {
+          res.news.featuredImage = formatImageUrl(res.news.featuredImage);
+        } else if (res.featuredImage) {
+          res.featuredImage = formatImageUrl(res.featuredImage);
+        }
+      }
+      return res;
     } catch {
       const mock = getMockNewsFormatted().news.find(n => n.slug === slug || n._id === slug);
       return { news: mock || getMockNewsFormatted().news[0] };
