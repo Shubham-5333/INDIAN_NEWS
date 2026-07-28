@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #fbf9f8;
+    color: #1b1c1c;
+    font-family: 'Newsreader', serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Archivo Narrow', sans-serif;
+    font-weight: 700;
+  }
+
+  * {
+    border-radius: 0px !important;
+  }
+}
+
+/* Custom scrollbars & utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Ticker Animation */
+@keyframes ticker {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-50%, 0); }
+}
+
+.breaking-ticker-animation {
+  display: inline-block;
+  white-space: nowrap;
+  animation: ticker 35s linear infinite;
+}
+
+.breaking-ticker-animation:hover {
+  animation-play-state: paused;
+}
+
+/* Dropcap for article view */
+.drop-cap::first-letter {
+  font-family: 'Archivo Narrow', sans-serif;
+  font-size: 3.8rem;
+  font-weight: 900;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.6rem;
+  margin-top: 0.2rem;
+  color: #b90015;
+}
