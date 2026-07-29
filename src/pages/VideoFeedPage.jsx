@@ -1,45 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { Play, Eye, Radio, Video, Volume2, Share2, Bookmark, ThumbsUp } from 'lucide-react';
-import { api } from '../api/client';
-import { FEATURED_VIDEOS } from '../data/mockData';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Play, Eye, Radio, Video } from 'lucide-react';
+import { api, formatImageUrl } from '../api/client';
+import {
+  VideoFeedSkeleton,
+  ErrorState,
+  EmptyState,
+} from '../components/ui/LoadingSkeletons';
 
 export const VideoFeedPage = ({ selectedVideo }) => {
-  const [videos, setVideos] = useState(FEATURED_VIDEOS);
-  const [loading, setLoading] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        setLoading(true);
-        const res = await api.getNews({ limit: 20 });
-        if (res && res.news && res.news.length > 0) {
-          const formatted = res.news.map((item) => ({
-            id: item._id || item.id,
-            title: item.title,
-            category: item.category || 'BROADCAST',
-            duration: '03:45',
-            thumbnail: item.featuredImage || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&q=80&w=800',
-            views: `${item.views || 120}K views`,
-            timestamp: new Date(item.createdAt || Date.now()).toLocaleDateString('en-IN'),
-            isLive: Boolean(item.isLive),
-            description: item.summary || item.title,
-            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'
-          }));
-          setVideos(formatted.length > 0 ? formatted : FEATURED_VIDEOS);
-        }
-      } catch (err) {
-        console.log('Error fetching video feed:', err);
-      } finally {
-        setLoading(false);
+  const fetchVideos = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await api.getNews({ limit: 20 });
+      if (res && res.news && Array.isArray(res.news)) {
+        const formatted = res.news.map((item) => ({
+          id: item._id || item.id,
+          title: item.title,
+          category: item.category || 'BROADCAST',
+          duration: '03:45',
+          thumbnail: formatImageUrl(item.featuredImage || item.imageUrl || ''),
+          views: `${item.views || 120}K views`,
+          timestamp: new Date(item.createdAt || Date.now()).toLocaleDateString('en-IN'),
+          isLive: Boolean(item.isLive),
+          description: item.summary || item.title,
+          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+        }));
+        setVideos(formatted);
+      } else {
+        setVideos([]);
       }
-    };
-
-    fetchVideos();
+    } catch (err) {
+      console.error('Error fetching video feed:', err);
+      setError(err.message || 'Unable to connect to the video broadcast server.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const activeVid = selectedVideo || videos[0] || FEATURED_VIDEOS[0];
+  useEffect(() => {
+    fetchVideos();
+  }, [fetchVideos]);
+
+  const activeVid = selectedVideo || videos[0];
 
   return (
     <div className="bg-inverse-surface min-h-screen text-on-primary flex-1 font-sans">
@@ -56,12 +63,20 @@ export const VideoFeedPage = ({ selectedVideo }) => {
           </div>
         </div>
 
-        {!activeVid && !loading ? (
-          <div className="border border-on-secondary-fixed-variant p-12 text-center my-8 text-on-primary">
-            <Video size={36} className="mx-auto mb-3 opacity-60" />
-            <h3 className="text-lg font-bold uppercase">No videos available</h3>
-            <p className="text-sm opacity-70 mt-1">Publish news items in the admin panel to populate video broadcasts.</p>
-          </div>
+        {loading ? (
+          /* Video Layout Skeletons */
+          <VideoFeedSkeleton />
+        ) : error ? (
+          /* Retryable Error State */
+          <ErrorState message={error} onRetry={fetchVideos} />
+        ) : videos.length === 0 ? (
+          /* Empty Video State */
+          <EmptyState
+            title="NO VIDEO BROADCASTS AVAILABLE"
+            message="No video broadcasts have been published yet. Check back soon or use the Admin Dashboard to publish broadcasts."
+            onAction={fetchVideos}
+            actionLabel="REFRESH BROADCASTS"
+          />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
             {/* Main Feed Column */}

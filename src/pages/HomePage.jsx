@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BreakingTicker } from '../components/news/BreakingTicker';
 import { MarketTicker } from '../components/news/MarketTicker';
 import { ArticleCard } from '../components/news/ArticleCard';
-import { ArrowRight, Newspaper } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { api, formatImageUrl } from '../api/client';
-import { FEATURED_LEAD_ARTICLE, TOP_STORIES, OPINION_PIECES, BREAKING_NEWS_TICKER } from '../data/mockData';
+import {
+  HeroArticleSkeleton,
+  ListArticleSkeleton,
+  OpinionCardSkeleton,
+  ErrorState,
+  EmptyState,
+} from '../components/ui/LoadingSkeletons';
 
 export const HomePage = ({
   onSelectArticle,
@@ -12,62 +18,75 @@ export const HomePage = ({
   onSelectVideo,
   onShare,
 }) => {
-  const [leadArticle, setLeadArticle] = useState(FEATURED_LEAD_ARTICLE);
-  const [latestArticles, setLatestArticles] = useState(TOP_STORIES);
-  const [mustRead, setMustRead] = useState(OPINION_PIECES);
-  const [breakingHeadlines, setBreakingHeadlines] = useState(BREAKING_NEWS_TICKER);
-  const [loading, setLoading] = useState(false);
+  const [leadArticle, setLeadArticle] = useState(null);
+  const [latestArticles, setLatestArticles] = useState([]);
+  const [mustRead, setMustRead] = useState([]);
+  const [breakingHeadlines, setBreakingHeadlines] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchLiveContent = async () => {
-      try {
-        setLoading(true);
-        const res = await api.getNews({ limit: 30 });
-        if (res && res.news && res.news.length > 0) {
-          const formatted = res.news.map((item) => ({
-            id: item._id || item.id,
-            slug: item.slug,
-            title: item.title,
-            summary: item.summary,
-            category: item.category,
-            author: item.author || { name: 'Editorial Desk', role: 'Staff Reporter' },
-            timestamp: item.timestamp || new Date(item.createdAt || Date.now()).toLocaleDateString('en-IN', {
-              month: 'short',
-              day: 'numeric',
-            }),
-            readTime: item.readTime || '4 min read',
-            imageUrl: formatImageUrl(item.featuredImage || item.imageUrl || ''),
-            imageCaption: item.imageCaption || '',
-            isLive: Boolean(item.isLive),
-            isBreaking: Boolean(item.isBreaking),
-            commentsCount: 0,
-            likesCount: item.views || 0,
-            tags: item.tags || [],
-            content: Array.isArray(item.content) ? item.content : [item.content],
-            featured: Boolean(item.featured),
-          }));
+  const fetchLiveContent = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await api.getNews({ limit: 30 });
+      if (res && res.news && Array.isArray(res.news)) {
+        const formatted = res.news.map((item) => ({
+          id: item._id || item.id,
+          slug: item.slug,
+          title: item.title,
+          summary: item.summary,
+          category: item.category || 'General',
+          author: item.author || { name: 'Editorial Desk', role: 'Staff Reporter' },
+          timestamp: item.timestamp || new Date(item.createdAt || Date.now()).toLocaleDateString('en-IN', {
+            month: 'short',
+            day: 'numeric',
+          }),
+          readTime: item.readTime || '4 min read',
+          imageUrl: formatImageUrl(item.featuredImage || item.imageUrl || ''),
+          imageCaption: item.imageCaption || '',
+          isLive: Boolean(item.isLive),
+          isBreaking: Boolean(item.isBreaking),
+          commentsCount: item.commentsCount || 0,
+          likesCount: item.views || 0,
+          tags: item.tags || [],
+          content: Array.isArray(item.content) ? item.content : [item.content],
+          featured: Boolean(item.featured),
+        }));
 
+        if (formatted.length > 0) {
           const featured = formatted.find((a) => a.featured) || formatted[0];
-          setLeadArticle(featured || FEATURED_LEAD_ARTICLE);
+          setLeadArticle(featured);
 
           const rest = formatted.filter((a) => a.id !== (featured ? featured.id : ''));
-          setLatestArticles(rest.length > 0 ? rest : TOP_STORIES);
-          setMustRead(rest.length > 2 ? rest.slice(2, 5) : OPINION_PIECES);
+          setLatestArticles(rest);
+          setMustRead(rest.length > 2 ? rest.slice(2, 5) : rest);
 
           const breaking = formatted.filter((a) => a.isBreaking).map((a) => a.title);
-          if (breaking.length > 0) {
-            setBreakingHeadlines(breaking);
-          }
+          setBreakingHeadlines(breaking);
+        } else {
+          setLeadArticle(null);
+          setLatestArticles([]);
+          setMustRead([]);
+          setBreakingHeadlines([]);
         }
-      } catch (err) {
-        console.log('Error fetching live news content:', err);
-      } finally {
-        setLoading(false);
+      } else {
+        setLeadArticle(null);
+        setLatestArticles([]);
+        setMustRead([]);
+        setBreakingHeadlines([]);
       }
-    };
-
-    fetchLiveContent();
+    } catch (err) {
+      console.error('Error fetching live news content:', err);
+      setError(err.message || 'Unable to connect to the news service.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchLiveContent();
+  }, [fetchLiveContent]);
 
   return (
     <div className="w-full flex-1 font-sans">
@@ -79,14 +98,40 @@ export const HomePage = ({
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-container-margin py-8">
-        {!leadArticle && !loading ? (
-          <div className="border border-outline-variant p-12 text-center my-8">
-            <Newspaper size={36} className="mx-auto text-secondary mb-3" />
-            <h2 className="text-xl font-bold font-headline uppercase text-on-surface">No news articles found.</h2>
-            <p className="text-sm text-secondary mt-1">
-              Add news articles using the Admin Panel to display them on the homepage.
-            </p>
+        {loading ? (
+          /* Pending Loading Skeletons */
+          <div className="space-y-12">
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              <div className="lg:col-span-8">
+                <HeroArticleSkeleton />
+              </div>
+              <div className="lg:col-span-4 space-y-6">
+                <div className="w-24 h-6 bg-surface-container-high mb-4"></div>
+                <ListArticleSkeleton />
+                <ListArticleSkeleton />
+                <ListArticleSkeleton />
+              </div>
+            </section>
+            <section className="pt-8 border-t border-outline-variant">
+              <div className="w-36 h-7 bg-surface-container-high mb-6"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <OpinionCardSkeleton />
+                <OpinionCardSkeleton />
+                <OpinionCardSkeleton />
+              </div>
+            </section>
           </div>
+        ) : error ? (
+          /* Error State with Retry Button */
+          <ErrorState message={error} onRetry={fetchLiveContent} />
+        ) : !leadArticle && latestArticles.length === 0 ? (
+          /* Empty State */
+          <EmptyState
+            title="NO NEWS ARTICLES PUBLISHED"
+            message="There are currently no news articles available on the homepage. Use the Admin Dashboard to publish your first story."
+            onAction={fetchLiveContent}
+            actionLabel="REFRESH FEED"
+          />
         ) : (
           <>
             {/* Section 1: Hero & Latest Sidebar */}

@@ -1,5 +1,3 @@
-import { FEATURED_LEAD_ARTICLE, TOP_STORIES, OPINION_PIECES } from '../data/mockData';
-
 const rawBaseUrl = import.meta.env.VITE_API_URL || 'https://indian-news-server-eo2m.onrender.com/api';
 const API_BASE_URL = rawBaseUrl.replace(/\/+$/, '');
 
@@ -67,32 +65,6 @@ async function request(endpoint, options = {}) {
   }
 }
 
-const getMockNewsFormatted = () => {
-  const all = [
-    FEATURED_LEAD_ARTICLE,
-    ...TOP_STORIES,
-    ...OPINION_PIECES
-  ].map((item) => ({
-    _id: item.id,
-    slug: item.slug,
-    title: item.title,
-    summary: item.summary,
-    category: item.category,
-    author: item.author || { name: 'Editorial Desk', role: 'Staff Reporter' },
-    createdAt: new Date().toISOString(),
-    readTime: item.readTime || '4 min read',
-    featuredImage: formatImageUrl(item.featuredImage || ''),
-    imageCaption: item.imageCaption || '',
-    isLive: Boolean(item.isLive),
-    isBreaking: Boolean(item.isBreaking),
-    views: item.likesCount || 0,
-    tags: item.tags || [],
-    content: item.content || [],
-    featured: Boolean(item.id === 'lead-1' || item.isLive),
-  }));
-  return { news: all };
-};
-
 export const api = {
   // Auth
   login: (username, password) =>
@@ -117,36 +89,26 @@ export const api = {
 
   // News
   getNews: async (params = {}) => {
-    try {
-      const query = new URLSearchParams(params).toString();
-      const res = await request(`/news${query ? `?${query}` : ''}`);
-      if (res && res.news && res.news.length > 0) {
-        res.news = res.news.map((item) => ({
-          ...item,
-          featuredImage: formatImageUrl(item.featuredImage),
-        }));
-        return res;
-      }
-      return getMockNewsFormatted();
-    } catch {
-      return getMockNewsFormatted();
+    const query = new URLSearchParams(params).toString();
+    const res = await request(`/news${query ? `?${query}` : ''}`);
+    if (res && Array.isArray(res.news)) {
+      res.news = res.news.map((item) => ({
+        ...item,
+        featuredImage: formatImageUrl(item.featuredImage),
+      }));
     }
+    return res;
   },
   getNewsBySlug: async (slug) => {
-    try {
-      const res = await request(`/news/${slug}`);
-      if (res) {
-        if (res.news) {
-          res.news.featuredImage = formatImageUrl(res.news.featuredImage);
-        } else if (res.featuredImage) {
-          res.featuredImage = formatImageUrl(res.featuredImage);
-        }
+    const res = await request(`/news/${slug}`);
+    if (res) {
+      if (res.news) {
+        res.news.featuredImage = formatImageUrl(res.news.featuredImage);
+      } else if (res.featuredImage) {
+        res.featuredImage = formatImageUrl(res.featuredImage);
       }
-      return res;
-    } catch {
-      const mock = getMockNewsFormatted().news.find(n => n.slug === slug || n._id === slug);
-      return { news: mock || getMockNewsFormatted().news[0] };
     }
+    return res;
   },
   createNews: (newsData) =>
     request('/news', {

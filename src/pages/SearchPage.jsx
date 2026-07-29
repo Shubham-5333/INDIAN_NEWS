@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Search,
-  PlayCircle,
   Newspaper,
   Smartphone,
   Landmark,
@@ -17,11 +16,16 @@ import {
   Leaf,
   SlidersHorizontal,
   TrendingUp,
-  Award
+  Award,
 } from 'lucide-react';
 import { ArticleCard } from '../components/news/ArticleCard';
 import { api, formatImageUrl } from '../api/client';
-import { FEATURED_LEAD_ARTICLE, TOP_STORIES, OPINION_PIECES } from '../data/mockData';
+import {
+  ListArticleSkeleton,
+  OpinionCardSkeleton,
+  ErrorState,
+  EmptyState,
+} from '../components/ui/LoadingSkeletons';
 
 export const SearchPage = ({
   initialCategory = 'All',
@@ -36,6 +40,7 @@ export const SearchPage = ({
       setSelectedCategory(initialCategory);
     }
   }, [initialCategory]);
+
   const [timeframe, setTimeframe] = useState('all'); // all, 24h, week, month
   const [contentType, setContentType] = useState('all'); // all, breaking, live, opinion, featured
   const [sortBy, setSortBy] = useState('latest'); // latest, oldest, popular, title
@@ -43,12 +48,9 @@ export const SearchPage = ({
   const [showFilters, setShowFilters] = useState(true);
   const [dynamicCategories, setDynamicCategories] = useState([]);
   
-  const [articles, setArticles] = useState([
-    FEATURED_LEAD_ARTICLE,
-    ...TOP_STORIES,
-    ...OPINION_PIECES
-  ]);
-  const [loading, setLoading] = useState(false);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const trendingTags = ['QUANTUM', 'SCANDINAVIA', 'MARKETS', 'SPORTS', 'AI ETHICS', 'DESIGN', 'POLITICS', 'CLIMATE'];
 
@@ -63,56 +65,60 @@ export const SearchPage = ({
     { name: 'Opinion', label: 'OPINION', icon: Award, color: 'hover:border-amber-600' },
   ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        // Fetch news
-        const res = await api.getNews({ limit: 100 });
-        if (res && res.news && res.news.length > 0) {
-          const formatted = res.news.map((item) => ({
-            id: item._id || item.id,
-            slug: item.slug,
-            title: item.title,
-            summary: item.summary,
-            category: item.category,
-            author: item.author || { name: 'Editorial Desk', role: 'Staff Reporter' },
-            timestamp: item.timestamp || new Date(item.createdAt || Date.now()).toLocaleDateString('en-IN', {
-              month: 'short',
-              day: 'numeric',
-            }),
-            rawDate: new Date(item.createdAt || Date.now()),
-            readTime: item.readTime || '4 min read',
-            imageUrl: formatImageUrl(item.featuredImage || item.imageUrl || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1200'),
-            imageCaption: item.imageCaption || '',
-            isLive: Boolean(item.isLive),
-            isBreaking: Boolean(item.isBreaking),
-            commentsCount: item.commentsCount || 12,
-            likesCount: item.views || item.likesCount || 50,
-            tags: item.tags || [],
-            content: Array.isArray(item.content) ? item.content : [item.content],
-          }));
-          setArticles(formatted);
-        }
-
-        // Fetch categories dynamically
-        try {
-          const catRes = await api.getCategories();
-          if (Array.isArray(catRes)) {
-            setDynamicCategories(catRes.map(c => typeof c === 'string' ? c : c.name));
-          }
-        } catch {
-          // Fallback if categories API fails
-        }
-      } catch (err) {
-        console.log('Search fetching fallback articles...');
-      } finally {
-        setLoading(false);
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const res = await api.getNews({ limit: 100 });
+      if (res && res.news && Array.isArray(res.news)) {
+        const formatted = res.news.map((item) => ({
+          id: item._id || item.id,
+          slug: item.slug,
+          title: item.title,
+          summary: item.summary,
+          category: item.category || 'General',
+          author: item.author || { name: 'Editorial Desk', role: 'Staff Reporter' },
+          timestamp: item.timestamp || new Date(item.createdAt || Date.now()).toLocaleDateString('en-IN', {
+            month: 'short',
+            day: 'numeric',
+          }),
+          rawDate: new Date(item.createdAt || Date.now()),
+          readTime: item.readTime || '4 min read',
+          imageUrl: formatImageUrl(item.featuredImage || item.imageUrl || ''),
+          imageCaption: item.imageCaption || '',
+          isLive: Boolean(item.isLive),
+          isBreaking: Boolean(item.isBreaking),
+          commentsCount: item.commentsCount || 0,
+          likesCount: item.views || item.likesCount || 0,
+          tags: item.tags || [],
+          content: Array.isArray(item.content) ? item.content : [item.content],
+        }));
+        setArticles(formatted);
+      } else {
+        setArticles([]);
       }
-    };
 
-    fetchData();
+      // Fetch dynamic categories
+      try {
+        const catRes = await api.getCategories();
+        if (Array.isArray(catRes)) {
+          setDynamicCategories(catRes.map((c) => (typeof c === 'string' ? c : c.name)));
+        }
+      } catch {
+        // Fallback if categories endpoint isn't populated yet
+      }
+    } catch (err) {
+      console.error('Error fetching search articles:', err);
+      setError(err.message || 'Failed to fetch search results from server.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   // Filter Logic
   const filteredArticles = articles.filter((art) => {
@@ -120,7 +126,7 @@ export const SearchPage = ({
     const matchesCategory =
       selectedCategory === 'All' ||
       art.category.toLowerCase() === selectedCategory.toLowerCase() ||
-      (art.category.toLowerCase().includes(selectedCategory.toLowerCase()));
+      art.category.toLowerCase().includes(selectedCategory.toLowerCase());
 
     // 2. Query Search
     const searchLower = query.trim().toLowerCase();
@@ -147,7 +153,7 @@ export const SearchPage = ({
     if (contentType === 'breaking') matchesContentType = art.isBreaking;
     else if (contentType === 'live') matchesContentType = art.isLive;
     else if (contentType === 'opinion') matchesContentType = art.category.toLowerCase().includes('opinion');
-    else if (contentType === 'featured') matchesContentType = Boolean(art.id === 'lead-1' || art.isLive);
+    else if (contentType === 'featured') matchesContentType = Boolean(art.featured || art.isLive);
 
     return matchesCategory && matchesQuery && matchesTimeframe && matchesContentType;
   });
@@ -176,9 +182,9 @@ export const SearchPage = ({
   // Unique Categories computed from current articles
   const availableCategorySet = new Set([
     'All',
-    ...bentoCategories.map(c => c.name),
-    ...articles.map(a => a.category).filter(Boolean),
-    ...dynamicCategories
+    ...bentoCategories.map((c) => c.name),
+    ...articles.map((a) => a.category).filter(Boolean),
+    ...dynamicCategories,
   ]);
   const allCategories = Array.from(availableCategorySet);
 
@@ -448,20 +454,28 @@ export const SearchPage = ({
       <section className="space-y-4">
         <div className="flex items-center justify-between border-b border-outline-variant pb-2">
           <div className="text-label-caps font-label-caps text-on-surface-variant font-bold">
-            FOUND {sortedArticles.length} ARTICLES {selectedCategory !== 'All' ? `IN "${selectedCategory.toUpperCase()}"` : ''}
+            {loading
+              ? 'SEARCHING ARCHIVES...'
+              : `FOUND ${sortedArticles.length} ARTICLES ${
+                  selectedCategory !== 'All' ? `IN "${selectedCategory.toUpperCase()}"` : ''
+                }`}
           </div>
 
           <div className="flex items-center gap-1 border border-outline p-0.5">
             <button
               onClick={() => setViewMode('list')}
-              className={`p-1.5 transition-colors ${viewMode === 'list' ? 'bg-on-surface text-background' : 'text-on-surface hover:bg-surface-container'}`}
+              className={`p-1.5 transition-colors ${
+                viewMode === 'list' ? 'bg-on-surface text-background' : 'text-on-surface hover:bg-surface-container'
+              }`}
               title="List View"
             >
               <List size={18} />
             </button>
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 transition-colors ${viewMode === 'grid' ? 'bg-on-surface text-background' : 'text-on-surface hover:bg-surface-container'}`}
+              className={`p-1.5 transition-colors ${
+                viewMode === 'grid' ? 'bg-on-surface text-background' : 'text-on-surface hover:bg-surface-container'
+              }`}
               title="Grid View"
             >
               <Grid size={18} />
@@ -469,12 +483,29 @@ export const SearchPage = ({
           </div>
         </div>
 
-        {/* Loading Indicator */}
+        {/* Loading State Skeletons */}
         {loading ? (
-          <div className="py-16 text-center text-on-surface-variant font-mono">
-            <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-3"></div>
-            <p className="text-xs font-bold uppercase tracking-widest">SEARCHING NEWS ARCHIVES...</p>
+          <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-6' : 'space-y-4'}>
+            {viewMode === 'grid' ? (
+              <>
+                <OpinionCardSkeleton />
+                <OpinionCardSkeleton />
+                <OpinionCardSkeleton />
+                <OpinionCardSkeleton />
+              </>
+            ) : (
+              <>
+                <ListArticleSkeleton />
+                <ListArticleSkeleton />
+                <ListArticleSkeleton />
+                <ListArticleSkeleton />
+                <ListArticleSkeleton />
+              </>
+            )}
           </div>
+        ) : error ? (
+          /* Retryable Error State */
+          <ErrorState message={error} onRetry={fetchData} />
         ) : sortedArticles.length > 0 ? (
           /* Articles Container */
           <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-6' : 'space-y-4'}>
@@ -490,20 +521,16 @@ export const SearchPage = ({
           </div>
         ) : (
           /* Empty Search State */
-          <div className="py-16 px-4 text-center border border-dashed border-outline my-6 bg-surface-container-lowest">
-            <Search size={48} className="mx-auto text-surface-dim mb-4" />
-            <h3 className="text-headline-lg font-headline-lg uppercase mb-2">NO MATCHING ARTICLES FOUND</h3>
-            <p className="text-body-md font-body-md text-on-surface-variant max-w-md mx-auto mb-6">
-              We couldn't find any articles matching your search criteria. Try modifying your search keywords or clearing your active filters.
-            </p>
-            <button
-              onClick={resetAllFilters}
-              className="bg-primary text-on-primary font-bold px-6 py-2 text-xs uppercase tracking-wider border border-primary hover:bg-on-surface hover:text-background transition-all inline-flex items-center gap-2"
-            >
-              <RotateCcw size={16} />
-              <span>RESET ALL SEARCH FILTERS</span>
-            </button>
-          </div>
+          <EmptyState
+            title="NO MATCHING ARTICLES FOUND"
+            message={
+              hasActiveFilters
+                ? "We couldn't find any articles matching your active search keywords and filters. Try clearing your filters or using broader keywords."
+                : "No news articles are available in the archives."
+            }
+            onAction={hasActiveFilters ? resetAllFilters : fetchData}
+            actionLabel={hasActiveFilters ? "RESET ALL SEARCH FILTERS" : "REFRESH ARCHIVE"}
+          />
         )}
       </section>
     </main>
