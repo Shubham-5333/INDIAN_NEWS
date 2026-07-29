@@ -47,16 +47,6 @@ export const AdminLogin = () => {
         {/* Error Alert */}
         <FormError message={error} />
 
-        {/* Credentials Info Box */}
-        <div className="my-6 p-3 bg-slate-900/60 border border-slate-700/60 rounded-lg text-xs text-slate-400 flex justify-between items-center">
-          <div>
-            <span className="font-semibold text-slate-300">Default Admin:</span> admin
-          </div>
-          <div>
-            <span className="font-semibold text-slate-300">Password:</span> admin123
-          </div>
-        </div>
-
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <Input

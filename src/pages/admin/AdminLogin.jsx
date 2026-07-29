@@ -3,8 +3,8 @@ import { api, setAuthToken, setAdminUser } from '../../api/client';
 import { ShieldCheck, Lock, User, AlertCircle, ArrowRight } from 'lucide-react';
 
 export const AdminLogin = ({ onLoginSuccess }) => {
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('Admin@123');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -57,16 +57,6 @@ export const AdminLogin = ({ onLoginSuccess }) => {
             <span>{error}</span>
           </div>
         )}
-
-        {/* Credentials Info Box */}
-        <div className="mb-6 p-3 bg-slate-900/60 border border-slate-700/60 rounded-lg text-xs text-slate-400 flex justify-between items-center">
-          <div>
-            <span className="font-semibold text-slate-300">Default Admin:</span> admin
-          </div>
-          <div>
-            <span className="font-semibold text-slate-300">Password:</span> Admin@123
-          </div>
-        </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
