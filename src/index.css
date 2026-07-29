@@ -55,3 +55,18 @@
   margin-top: 0.2rem;
   color: #b90015;
 }
+
+/* Hide Vercel Toolbar & Feedback Widgets */
+#vercel-toolbar,
+vercel-live-feedback,
+#vercel-live-feedback-host,
+[data-vercel-toolbar],
+iframe[src*="vercel.com"],
+iframe[id*="vercel"],
+.vercel-toolbar-theme-dark,
+.vercel-toolbar-theme-light {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
