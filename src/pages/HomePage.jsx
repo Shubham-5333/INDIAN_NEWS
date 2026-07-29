@@ -4,6 +4,7 @@ import { MarketTicker } from '../components/news/MarketTicker';
 import { ArticleCard } from '../components/news/ArticleCard';
 import { ArrowRight } from 'lucide-react';
 import { api, formatImageUrl } from '../api/client';
+import { BREAKING_NEWS_TICKER } from '../data/mockData';
 import {
   HeroArticleSkeleton,
   ListArticleSkeleton,
@@ -21,7 +22,7 @@ export const HomePage = ({
   const [leadArticle, setLeadArticle] = useState(null);
   const [latestArticles, setLatestArticles] = useState([]);
   const [mustRead, setMustRead] = useState([]);
-  const [breakingHeadlines, setBreakingHeadlines] = useState([]);
+  const [breakingHeadlines, setBreakingHeadlines] = useState(BREAKING_NEWS_TICKER);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -63,18 +64,24 @@ export const HomePage = ({
           setMustRead(rest.length > 2 ? rest.slice(2, 5) : rest);
 
           const breaking = formatted.filter((a) => a.isBreaking).map((a) => a.title);
-          setBreakingHeadlines(breaking);
+          if (breaking.length > 0) {
+            setBreakingHeadlines(breaking);
+          } else if (formatted.length > 0) {
+            setBreakingHeadlines(formatted.slice(0, 6).map((a) => a.title));
+          } else {
+            setBreakingHeadlines(BREAKING_NEWS_TICKER);
+          }
         } else {
           setLeadArticle(null);
           setLatestArticles([]);
           setMustRead([]);
-          setBreakingHeadlines([]);
+          setBreakingHeadlines(BREAKING_NEWS_TICKER);
         }
       } else {
         setLeadArticle(null);
         setLatestArticles([]);
         setMustRead([]);
-        setBreakingHeadlines([]);
+        setBreakingHeadlines(BREAKING_NEWS_TICKER);
       }
     } catch (err) {
       console.error('Error fetching live news content:', err);
