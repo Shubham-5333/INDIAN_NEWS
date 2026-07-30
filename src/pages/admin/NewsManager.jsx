@@ -9,7 +9,7 @@ export const NewsManager = () => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
-  
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState(null);
@@ -305,11 +305,10 @@ export const NewsManager = () => {
                     <td className="py-3.5 px-4">
                       <button
                         onClick={() => handleToggleStatus(item._id)}
-                        className={`text-xs px-2.5 py-1 rounded font-semibold uppercase tracking-wider border flex items-center gap-1 transition-colors ${
-                          item.status === 'published'
+                        className={`text-xs px-2.5 py-1 rounded font-semibold uppercase tracking-wider border flex items-center gap-1 transition-colors ${item.status === 'published'
                             ? 'bg-emerald-950/60 text-emerald-400 border-emerald-800 hover:bg-emerald-900/60'
                             : 'bg-amber-950/60 text-amber-400 border-amber-800 hover:bg-amber-900/60'
-                        }`}
+                          }`}
                       >
                         {item.status === 'published' ? <CheckCircle size={12} /> : <XCircle size={12} />}
                         <span>{item.status}</span>
@@ -318,11 +317,10 @@ export const NewsManager = () => {
                     <td className="py-3.5 px-4 text-center">
                       <button
                         onClick={() => handleToggleFeatured(item._id)}
-                        className={`p-1.5 rounded-lg border transition-colors ${
-                          item.featured
+                        className={`p-1.5 rounded-lg border transition-colors ${item.featured
                             ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
                             : 'bg-slate-900 text-slate-500 border-slate-700 hover:text-slate-300'
-                        }`}
+                          }`}
                         title="Toggle Featured"
                       >
                         <Star size={16} fill={item.featured ? 'currentColor' : 'none'} />

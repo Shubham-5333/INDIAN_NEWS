@@ -4,7 +4,7 @@ const API_BASE_URL = rawBaseUrl.replace(/\/+$/, '');
 export const formatImageUrl = (url) => {
   if (!url || typeof url !== 'string') return '';
   const serverHost = API_BASE_URL.replace(/\/api\/?$/, '');
-  
+
   if (url.includes('localhost:5001')) {
     return url.replace(/http:\/\/localhost:5001/g, serverHost);
   }
