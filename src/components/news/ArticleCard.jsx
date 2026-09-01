@@ -14,32 +14,34 @@ export const ArticleCard = ({
   if (variant === 'hero') {
     return (
       <article className="group cursor-pointer" onClick={() => onSelect(article)}>
-        <div className="relative overflow-hidden border border-on-surface mb-stack-md">
-          <img
-            src={imgSrc}
-            alt={article.title}
-            className="w-full aspect-[16/9] object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-          <div className="absolute top-0 left-0 bg-primary text-on-primary px-3 py-1 text-label-caps font-label-caps uppercase">
-            FEATURED
+        {imgSrc && (
+          <div className="relative overflow-hidden border border-on-surface mb-stack-md">
+            <img
+              src={imgSrc}
+              alt={article.title}
+              className="w-full aspect-[16/9] object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute top-0 left-0 bg-primary text-on-primary px-3 py-1 text-label-caps font-label-caps uppercase">
+              FEATURED
+            </div>
           </div>
-        </div>
+        )}
 
         <div>
           <span className="text-primary font-bold text-label-caps font-label-caps uppercase">
             {article.category} • {article.timestamp}
           </span>
 
-          <h1 className="text-headline-xl font-headline-xl mt-2 mb-4 group-hover:text-primary transition-colors leading-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-headline-xl font-headline-xl mt-2 mb-4 group-hover:text-primary transition-colors leading-tight">
             {article.title}
           </h1>
 
-          <p className="text-body-lg font-body-lg text-secondary mb-6 line-clamp-3">
+          <p className="text-body-lg font-body-lg text-secondary mb-4 line-clamp-3">
             {article.summary}
           </p>
 
-          <div className="flex items-center justify-between pt-2 border-t border-outline-variant">
-            <button className="border border-on-surface text-on-surface hover:bg-on-surface hover:text-background transition-all px-6 py-2 text-label-caps font-label-caps uppercase">
+          <div className="flex items-center justify-between pt-3 border-t border-outline-variant">
+            <button className="border border-on-surface text-on-surface hover:bg-on-surface hover:text-background transition-all px-4 sm:px-6 py-1.5 sm:py-2 text-[11px] sm:text-label-caps font-label-caps uppercase">
               READ FULL STORY
             </button>
 
@@ -63,17 +65,19 @@ export const ArticleCard = ({
         onClick={() => onSelect(article)}
         className="flex flex-col group cursor-pointer border border-on-surface p-4 bg-surface-container-lowest"
       >
-        <div className="border border-on-surface mb-3 overflow-hidden aspect-video">
-          <img
-            src={imgSrc}
-            alt={article.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-          />
-        </div>
+        {imgSrc && (
+          <div className="border border-on-surface mb-3 overflow-hidden aspect-video">
+            <img
+              src={imgSrc}
+              alt={article.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+            />
+          </div>
+        )}
         <span className="text-primary font-bold text-label-caps font-label-caps uppercase">
           {article.category} • {article.author?.name || 'Staff Reporter'}
         </span>
-        <h3 className="text-headline-lg font-headline-lg mt-2 mb-3 group-hover:underline leading-snug">
+        <h3 className="text-xl sm:text-headline-lg font-headline-lg mt-2 mb-3 group-hover:underline leading-snug">
           "{article.title}"
         </h3>
         <p className="text-body-md font-body-md text-on-surface-variant line-clamp-3">
@@ -104,9 +108,9 @@ export const ArticleCard = ({
   return (
     <article
       onClick={() => onSelect(article)}
-      className="flex gap-4 group cursor-pointer border-b border-outline-variant pb-4"
+      className="flex gap-3 sm:gap-4 group cursor-pointer border-b border-outline-variant pb-4"
     >
-      <div className="flex-grow">
+      <div className="flex-grow min-w-0 flex-1">
         <span className="text-primary font-bold text-meta-sm font-meta-sm uppercase">
           {article.category} • {article.timestamp}
         </span>
@@ -118,13 +122,15 @@ export const ArticleCard = ({
         </p>
       </div>
 
-      <div className="w-24 h-24 flex-shrink-0 border border-on-surface overflow-hidden">
-        <img
-          src={imgSrc}
-          alt={article.title}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-        />
-      </div>
+      {imgSrc && (
+        <div className="w-20 sm:w-24 h-20 sm:h-24 flex-shrink-0 border border-on-surface overflow-hidden">
+          <img
+            src={imgSrc}
+            alt={article.title}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+          />
+        </div>
+      )}
     </article>
   );
 };

@@ -69,14 +69,6 @@ export const AdminDashboard = () => {
       path: '/admin/news',
     },
     {
-      title: 'Total Facts',
-      value: stats?.totalFacts || 0,
-      sub: 'Fast Facts Database',
-      icon: Lightbulb,
-      color: 'from-blue-500 to-indigo-500',
-      path: '/admin/facts',
-    },
-    {
       title: 'Total Categories',
       value: stats?.totalCategories || 0,
       sub: 'Active Taxonomies',
@@ -90,7 +82,7 @@ export const AdminDashboard = () => {
     <div className="space-y-6 font-sans">
       <PageHeader
         title="Dashboard"
-        description="CMS Overview for news stories, facts, and categories."
+        description="CMS Overview for news stories and categories."
         icon={LayoutDashboard}
         actions={
           <Button icon={Plus} onClick={() => navigate('/admin/news/new')}>
@@ -102,7 +94,7 @@ export const AdminDashboard = () => {
       <FormError message={error} />
 
       {/* Primary Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card, idx) => {
           const Icon = card.icon;
           return (

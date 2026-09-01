@@ -35,6 +35,12 @@ export const ArticlePage = ({
 
   const articleImgSrc = formatImageUrl(article.imageUrl || article.featuredImage);
 
+  const isRawUrlCaption =
+    article.imageCaption &&
+    (article.imageCaption.startsWith('http://') ||
+      article.imageCaption.startsWith('https://') ||
+      article.imageCaption.startsWith('/uploads/'));
+
   return (
     <div className="w-full flex-1 bg-background font-sans text-on-surface">
       <main className="max-w-7xl mx-auto px-container-margin py-stack-lg grid grid-cols-1 md:grid-cols-12 gap-8">
@@ -46,11 +52,11 @@ export const ArticlePage = ({
               {article.category || 'News'}
             </div>
 
-            <h1 className="font-headline-xl text-headline-xl mb-stack-sm leading-tight text-on-surface">
+            <h1 className="font-headline-xl text-2xl sm:text-3xl lg:text-headline-xl mb-stack-sm leading-tight text-on-surface">
               {article.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 py-4 border-y border-outline-variant text-meta-sm font-meta-sm text-secondary">
+            <div className="flex flex-wrap items-center justify-between sm:justify-start gap-3 sm:gap-4 py-3 sm:py-4 border-y border-outline-variant text-meta-sm font-meta-sm text-secondary">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-on-surface uppercase">By {article.author?.name || 'Editorial Desk'}</span>
               </div>
@@ -65,7 +71,7 @@ export const ArticlePage = ({
                 <span>{article.readTime || '4 min read'}</span>
               </div>
 
-              <div className="flex items-center gap-1 ml-auto">
+              <div className="flex items-center gap-1 sm:ml-auto">
                 <Eye size={14} />
                 <span>{article.likesCount || 0} VIEWS</span>
               </div>
@@ -80,7 +86,7 @@ export const ArticlePage = ({
                 alt={article.title}
                 className="w-full aspect-[16/9] object-cover border border-outline-variant"
               />
-              {article.imageCaption && (
+              {article.imageCaption && !isRawUrlCaption && (
                 <p className="mt-2 text-meta-sm font-meta-sm text-secondary italic">
                   {article.imageCaption}
                 </p>
@@ -141,7 +147,7 @@ export const ArticlePage = ({
       </main>
 
       {/* Floating Action Button */}
-      <div className="fixed bottom-10 right-8 flex flex-col gap-3 z-40">
+      <div className="fixed bottom-20 right-4 md:bottom-8 md:right-8 flex flex-col gap-3 z-30">
         <button
           onClick={() => onShare && onShare(article)}
           className="w-12 h-12 bg-on-surface text-white flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all"

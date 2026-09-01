@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { mediaService } from '../../services/mediaService';
+import { formatImageUrl } from '../../../api/client';
 import { Upload, Image as ImageIcon, X, Check } from 'lucide-react';
 
 export const ImageUploader = ({ value, onChange, label = 'Featured Image' }) => {
@@ -14,8 +15,9 @@ export const ImageUploader = ({ value, onChange, label = 'Featured Image' }) => 
     try {
       setUploading(true);
       const res = await mediaService.upload(file);
-      if (res.url) {
-        onChange(res.url);
+      const imageUrl = res.url || (res.images && res.images[0]) || (res.data && res.data.url);
+      if (imageUrl) {
+        onChange(imageUrl);
       }
     } catch (err) {
       setError(err.message || 'Image upload failed');
@@ -64,7 +66,7 @@ export const ImageUploader = ({ value, onChange, label = 'Featured Image' }) => 
         {/* Image Preview Box */}
         {value && (
           <div className="relative mt-2 rounded-lg overflow-hidden border border-slate-700 max-h-48 bg-slate-950 flex items-center justify-center">
-            <img src={value} alt="Preview" className="max-h-48 object-contain w-full" />
+            <img src={formatImageUrl(value)} alt="Preview" className="max-h-48 object-contain w-full" />
           </div>
         )}
       </div>

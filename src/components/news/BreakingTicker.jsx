@@ -13,7 +13,7 @@ export const BreakingTicker = ({ onSelectArticle, breakingItems = [] }) => {
     <div className="w-full bg-on-surface text-background py-1 flex items-center overflow-hidden border-b border-primary relative font-label-caps text-label-caps select-none">
       {/* Red Badge */}
       <div 
-        className="bg-primary text-on-primary px-4 py-1.5 z-10 shrink-0 font-label-caps text-label-caps font-black italic tracking-widest cursor-pointer"
+        className="bg-primary text-on-primary px-2.5 sm:px-4 py-1 sm:py-1.5 z-10 shrink-0 font-label-caps text-[11px] sm:text-label-caps font-black italic tracking-widest cursor-pointer"
         onClick={onSelectArticle}
       >
         BREAKING

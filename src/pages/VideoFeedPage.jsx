@@ -54,7 +54,7 @@ export const VideoFeedPage = ({ selectedVideo }) => {
         {/* Header Title Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-stack-lg border-l-4 border-primary pl-4 py-1">
           <div>
-            <h2 className="text-on-primary font-headline-xl text-headline-xl uppercase tracking-tighter">
+            <h2 className="text-on-primary font-headline-xl text-2xl sm:text-3xl lg:text-headline-xl uppercase tracking-tighter">
               VIDEO FEED
             </h2>
             <p className="text-on-secondary-container font-meta-sm text-meta-sm max-w-xl mt-1">
@@ -89,16 +89,16 @@ export const VideoFeedPage = ({ selectedVideo }) => {
                       alt={activeVid.title}
                       className="w-full h-full object-cover opacity-90"
                     />
-                    <div className="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 font-label-caps text-label-caps flex items-center gap-1.5 uppercase font-bold">
+                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-primary text-on-primary px-2.5 sm:px-3 py-1 font-label-caps text-[10px] sm:text-label-caps flex items-center gap-1.5 uppercase font-bold">
                       <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
                       <span>BROADCAST</span>
                     </div>
 
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <h3 className="text-on-primary font-headline-lg text-headline-lg leading-tight mb-2 group-hover:underline uppercase">
+                    <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6">
+                      <h3 className="text-on-primary font-headline-lg text-lg sm:text-2xl lg:text-headline-lg leading-tight mb-1 sm:mb-2 group-hover:underline uppercase line-clamp-2">
                         {activeVid.title}
                       </h3>
-                      <div className="flex items-center gap-4 text-on-primary/70 font-meta-sm text-meta-sm uppercase tracking-widest">
+                      <div className="flex items-center gap-4 text-on-primary/70 font-meta-sm text-[10px] sm:text-meta-sm uppercase tracking-widest">
                         <span className="flex items-center gap-1"><Eye size={14} /> {activeVid.views || activeVid.viewsCount}</span>
                         <span>{activeVid.category}</span>
                       </div>
@@ -154,14 +154,14 @@ export const VideoFeedPage = ({ selectedVideo }) => {
 
                 <div className="space-y-stack-md">
                   {videos.slice(0, 4).map((item) => (
-                    <div key={item.id} className="flex gap-4 group cursor-pointer border-b border-outline-variant pb-3">
-                      <div className="w-20 h-20 shrink-0 bg-black relative overflow-hidden">
+                    <div key={item.id} className="flex gap-3 sm:gap-4 group cursor-pointer border-b border-outline-variant pb-3">
+                      <div className="w-16 sm:w-20 h-16 sm:h-20 shrink-0 bg-black relative overflow-hidden">
                         <img src={item.thumbnail || item.thumbnailUrl} alt={item.title} className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                           <Play size={16} className="fill-white" />
                         </div>
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <span className="text-primary font-label-caps text-[10px] font-bold uppercase">{item.category}</span>
                         <h4 className="font-headline-lg-mobile text-xs leading-tight text-on-surface group-hover:text-primary transition-colors line-clamp-2">
                           {item.title}

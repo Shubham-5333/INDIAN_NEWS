@@ -142,7 +142,7 @@ export const HomePage = ({
         ) : (
           <>
             {/* Section 1: Hero & Latest Sidebar */}
-            <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-section-gap">
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-6 sm:mb-8">
               {/* Main Featured Story (8 Cols) */}
               <div className="lg:col-span-8">
                 {leadArticle && (
@@ -178,12 +178,12 @@ export const HomePage = ({
 
             {/* Section 2: Must Read Category Grid */}
             {mustRead.length > 0 && (
-              <section className="border-t border-on-surface pt-12">
-                <div className="flex justify-between items-end mb-8">
-                  <h2 className="text-headline-xl font-headline-xl uppercase">MUST READ</h2>
+              <section className="border-t border-on-surface pt-6 sm:pt-8">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6 sm:mb-8">
+                  <h2 className="text-2xl sm:text-3xl lg:text-headline-xl font-headline-xl uppercase">MUST READ</h2>
                   <button
                     onClick={() => onSelectCategory && onSelectCategory('All')}
-                    className="text-primary font-bold text-label-caps font-label-caps hover:underline uppercase flex items-center gap-1"
+                    className="text-primary font-bold text-label-caps font-label-caps hover:underline uppercase flex items-center gap-1 self-start sm:self-auto"
                   >
                     <span>BROWSE ALL CATEGORIES</span>
                     <ArrowRight size={14} />

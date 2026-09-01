@@ -17,7 +17,6 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, isMobileOpen, onCloseMo
   const navItems = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/admin/news', label: 'News Articles', icon: Newspaper },
-    { path: '/admin/facts', label: 'Facts & Trivia', icon: Lightbulb },
     { path: '/admin/categories', label: 'Categories', icon: FolderTree },
     { path: '/admin/media', label: 'Media Library', icon: ImageIcon },
     { path: '/admin/settings', label: 'Site Settings', icon: Settings },

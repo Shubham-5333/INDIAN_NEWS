@@ -38,7 +38,7 @@ export const NavigationDrawer = ({
       />
 
       {/* Drawer Panel - Solid Black Background */}
-      <div className="relative w-full max-w-sm bg-black text-white h-full flex flex-col z-10 shadow-2xl overflow-y-auto border-r border-neutral-800">
+      <div className="relative w-[85vw] max-w-sm bg-black text-white h-full flex flex-col z-10 shadow-2xl overflow-y-auto border-r border-neutral-800">
         {/* Header */}
         <div className="p-5 bg-black border-b border-neutral-800 flex items-center justify-between">
           <div>

@@ -13,9 +13,9 @@ export const MarketTicker = () => {
   return (
     <div className="w-full bg-surface-container-low border-b border-surface-container-high py-2 px-4 flex items-center overflow-hidden font-sans text-xs select-none relative">
       {/* Pinned Label Badge */}
-      <div className="flex items-center gap-1.5 font-headline font-bold text-secondary uppercase tracking-wider text-[11px] pr-3 bg-surface-container-low z-10 shrink-0 border-r border-surface-container-highest">
+      <div className="flex items-center gap-1.5 font-headline font-bold text-secondary uppercase tracking-wider text-[11px] pr-2.5 sm:pr-3 bg-surface-container-low z-10 shrink-0 border-r border-surface-container-highest">
         <TrendingUp size={14} className="text-primary" />
-        <span>MARKETS TODAY</span>
+        <span>MARKETS<span className="hidden xs:inline sm:inline"> TODAY</span></span>
       </div>
 
       {/* Marquee Tag Model Scroller */}

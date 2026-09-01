@@ -158,15 +158,7 @@ export const NewsForm = () => {
           placeholder="Article headline..."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Input
-            label="Slug"
-            value={formData.slug}
-            onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-            placeholder="article-url-slug"
-            helperText="URL identifier"
-          />
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
             label="Category"
             required

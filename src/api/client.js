@@ -2,16 +2,27 @@ const rawBaseUrl = import.meta.env.VITE_API_URL || 'https://indian-news-server-e
 const API_BASE_URL = rawBaseUrl.replace(/\/+$/, '');
 
 export const formatImageUrl = (url) => {
-  if (!url || typeof url !== 'string') return '';
-  const serverHost = API_BASE_URL.replace(/\/api\/?$/, '');
+  if (!url || typeof url !== 'string' || !url.trim()) {
+    return '';
+  }
 
-  if (url.includes('localhost:5001')) {
-    return url.replace(/http:\/\/localhost:5001/g, serverHost);
+  const cleanUrl = url.trim();
+  const isLocalHost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const localBackendHost = 'http://localhost:5001';
+  const serverHost = isLocalHost ? localBackendHost : API_BASE_URL.replace(/\/api\/?$/, '');
+
+  if (cleanUrl.startsWith('/images/') || cleanUrl.startsWith('/uploads/')) {
+    return `${serverHost}${cleanUrl}`;
   }
-  if (url.startsWith('/uploads/')) {
-    return `${serverHost}${url}`;
+
+  if (cleanUrl.includes('localhost:5001')) {
+    if (isLocalHost) {
+      return cleanUrl;
+    }
+    return cleanUrl.replace(/http:\/\/localhost:5001/g, serverHost);
   }
-  return url;
+
+  return cleanUrl;
 };
 
 export const getAuthToken = () => localStorage.getItem('adminToken');

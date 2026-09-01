@@ -46,7 +46,7 @@ function PublicApp() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-on-background flex flex-col font-sans pb-16 md:pb-0">
+    <div className="min-h-screen bg-background text-on-background flex flex-col font-sans pb-16 md:pb-0 overflow-x-hidden">
       {/* Header */}
       <Header
         activePage={activePage}

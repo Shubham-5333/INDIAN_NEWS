@@ -213,7 +213,7 @@ export const SearchPage = ({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="SEARCH NEWS, TOPICS, AUTHORS..."
-            className="w-full bg-transparent border-b-2 border-on-surface focus:border-primary focus:outline-none text-headline-lg font-headline-lg-mobile py-4 pl-0 pr-12 placeholder:text-surface-dim uppercase transition-all text-on-surface"
+            className="w-full bg-transparent border-b-2 border-on-surface focus:border-primary focus:outline-none text-xl sm:text-2xl md:text-headline-lg font-headline-lg-mobile py-3 sm:py-4 pl-0 pr-20 placeholder:text-surface-dim uppercase transition-all text-on-surface"
           />
           {query ? (
             <button
@@ -221,11 +221,11 @@ export const SearchPage = ({
               className="absolute right-10 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors p-1"
               title="Clear search input"
             >
-              <X size={24} />
+              <X size={20} />
             </button>
           ) : null}
           <div className="absolute right-0 top-1/2 -translate-y-1/2 text-primary p-1 pointer-events-none">
-            <Search size={30} />
+            <Search size={24} />
           </div>
         </div>
 
@@ -252,14 +252,14 @@ export const SearchPage = ({
 
       {/* Category Bento Explorer Section */}
       <section className="mb-8">
-        <div className="flex items-center justify-between mb-4 border-b border-outline-variant pb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-outline-variant pb-2">
           <div className="flex items-center gap-2">
             <div className="h-5 w-1.5 bg-primary"></div>
-            <h2 className="text-headline-lg font-headline-lg uppercase tracking-tight text-on-surface">BROWSE CATEGORIES</h2>
+            <h2 className="text-xl sm:text-headline-lg font-headline-lg uppercase tracking-tight text-on-surface">BROWSE CATEGORIES</h2>
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1.5 border border-on-surface hover:bg-on-surface hover:text-background transition-all"
+            className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1.5 border border-on-surface hover:bg-on-surface hover:text-background transition-all self-start sm:self-auto"
           >
             <SlidersHorizontal size={14} />
             <span>{showFilters ? 'Hide Filter Panel' : 'Show Filter Panel'}</span>
@@ -274,14 +274,14 @@ export const SearchPage = ({
               <div
                 key={cat.name}
                 onClick={() => setSelectedCategory(cat.name)}
-                className={`border p-3 flex flex-col items-center justify-center cursor-pointer transition-all ${cat.color} ${
+                className={`border p-2 sm:p-3 flex flex-col items-center justify-center cursor-pointer transition-all ${cat.color} ${
                   isSelected
                     ? 'bg-on-surface text-background border-on-surface shadow-md'
                     : 'border-outline text-on-surface bg-surface-container-lowest hover:bg-surface-container'
                 }`}
               >
-                <Icon size={24} className={`mb-2 ${isSelected ? 'text-primary' : 'text-on-surface'}`} />
-                <span className="text-[11px] font-label-caps tracking-wider text-center">{cat.label}</span>
+                <Icon size={20} className={`mb-1.5 ${isSelected ? 'text-primary' : 'text-on-surface'}`} />
+                <span className="text-[10px] sm:text-[11px] font-label-caps tracking-wider text-center line-clamp-1">{cat.label}</span>
               </div>
             );
           })}
@@ -322,7 +322,7 @@ export const SearchPage = ({
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full bg-background border border-outline px-3 py-2 text-xs font-semibold text-on-surface focus:border-primary focus:outline-none uppercase"
+                className="w-full bg-background border border-outline px-3 py-2 text-xs font-semibold text-on-surface focus:border-primary focus:outline-none uppercase truncate"
               >
                 {allCategories.map((cat) => (
                   <option key={cat} value={cat}>
@@ -341,7 +341,7 @@ export const SearchPage = ({
               <select
                 value={timeframe}
                 onChange={(e) => setTimeframe(e.target.value)}
-                className="w-full bg-background border border-outline px-3 py-2 text-xs font-semibold text-on-surface focus:border-primary focus:outline-none uppercase"
+                className="w-full bg-background border border-outline px-3 py-2 text-xs font-semibold text-on-surface focus:border-primary focus:outline-none uppercase truncate"
               >
                 <option value="all">ANY TIME</option>
                 <option value="24h">PAST 24 HOURS</option>
@@ -358,7 +358,7 @@ export const SearchPage = ({
               <select
                 value={contentType}
                 onChange={(e) => setContentType(e.target.value)}
-                className="w-full bg-background border border-outline px-3 py-2 text-xs font-semibold text-on-surface focus:border-primary focus:outline-none uppercase"
+                className="w-full bg-background border border-outline px-3 py-2 text-xs font-semibold text-on-surface focus:border-primary focus:outline-none uppercase truncate"
               >
                 <option value="all">ALL CONTENT</option>
                 <option value="breaking">BREAKING NEWS</option>
@@ -377,7 +377,7 @@ export const SearchPage = ({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full bg-background border border-outline px-3 py-2 text-xs font-semibold text-on-surface focus:border-primary focus:outline-none uppercase"
+                className="w-full bg-background border border-outline px-3 py-2 text-xs font-semibold text-on-surface focus:border-primary focus:outline-none uppercase truncate"
               >
                 <option value="latest">LATEST FIRST</option>
                 <option value="oldest">OLDEST FIRST</option>
@@ -443,7 +443,7 @@ export const SearchPage = ({
 
           <button
             onClick={resetAllFilters}
-            className="text-xs text-primary font-bold hover:underline ml-auto"
+            className="text-xs text-primary font-bold hover:underline sm:ml-auto"
           >
             Clear All
           </button>
@@ -452,7 +452,7 @@ export const SearchPage = ({
 
       {/* Results Header with View Mode Switcher */}
       <section className="space-y-4">
-        <div className="flex items-center justify-between border-b border-outline-variant pb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant pb-2">
           <div className="text-label-caps font-label-caps text-on-surface-variant font-bold">
             {loading
               ? 'SEARCHING ARCHIVES...'
@@ -461,7 +461,7 @@ export const SearchPage = ({
                 }`}
           </div>
 
-          <div className="flex items-center gap-1 border border-outline p-0.5">
+          <div className="flex items-center gap-1 border border-outline p-0.5 self-start sm:self-auto">
             <button
               onClick={() => setViewMode('list')}
               className={`p-1.5 transition-colors ${

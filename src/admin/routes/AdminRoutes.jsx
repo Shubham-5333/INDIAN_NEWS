@@ -50,8 +50,6 @@ export const AdminAppRoutes = () => {
             <Route path="news" element={<NewsList />} />
             <Route path="news/new" element={<NewsForm />} />
             <Route path="news/edit/:id" element={<NewsForm />} />
-            <Route path="facts" element={<FactsList />} />
-            <Route path="facts/new" element={<FactsList />} />
             <Route path="categories" element={<CategoriesPage />} />
             <Route path="media" element={<MediaLibraryPage />} />
             <Route path="settings" element={<SettingsPage />} />

@@ -20,7 +20,7 @@ export const ShareModal = ({ isOpen, onClose, article }) => {
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-md bg-surface-container-lowest border border-surface-container-high p-6 shadow-2xl z-10 font-sans">
+      <div className="relative w-[92vw] max-w-md bg-surface-container-lowest border border-surface-container-high p-4 sm:p-6 shadow-2xl z-10 font-sans">
         <div className="flex items-center justify-between border-b border-surface-container-high pb-3 mb-4">
           <div className="flex items-center gap-2 font-headline font-bold text-lg uppercase text-on-surface">
             <Share2 size={20} className="text-primary" />

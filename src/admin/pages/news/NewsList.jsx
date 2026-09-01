@@ -36,13 +36,12 @@ export const NewsList = () => {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const res = await newsService.getAll({
-        search,
-        category: selectedCat !== 'All' ? selectedCat : undefined,
-        status: selectedStatus !== 'All' ? selectedStatus : undefined,
-        page,
-        limit: 10,
-      });
+      const params = { limit: 1000, page };
+      if (search && search.trim()) params.search = search.trim();
+      if (selectedCat && selectedCat !== 'All') params.category = selectedCat;
+      if (selectedStatus && selectedStatus !== 'All') params.status = selectedStatus;
+
+      const res = await newsService.getAll(params);
       setNews(res.news || []);
       setTotalPages(res.pages || 1);
       setTotalItems(res.total || 0);
@@ -104,7 +103,7 @@ export const NewsList = () => {
       render: (row) => (
         <div>
           <div className="font-semibold text-white max-w-xs md:max-w-md truncate">{row.title}</div>
-          <div className="text-xs text-slate-400 truncate max-w-xs">{row.slug}</div>
+          <div className="text-xs text-slate-400 truncate max-w-xs">{row.summary || row.slug}</div>
         </div>
       ),
     },
