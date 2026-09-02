@@ -74,7 +74,6 @@ export const SearchPage = ({
       if (res && res.news && Array.isArray(res.news)) {
         const formatted = res.news.map((item) => ({
           id: item._id || item.id,
-          slug: item.slug,
           title: item.title,
           summary: item.summary,
           category: item.category || 'General',

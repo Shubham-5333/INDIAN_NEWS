@@ -33,7 +33,6 @@ export const SavedPage = ({
             .filter((item) => savedArticleIds.includes(item._id || item.id))
             .map((item) => ({
               id: item._id || item.id,
-              slug: item.slug,
               title: item.title,
               summary: item.summary,
               category: item.category,

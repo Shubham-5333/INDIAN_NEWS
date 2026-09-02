@@ -10,7 +10,6 @@ export const CategoryManager = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    slug: '',
     description: '',
     image: '',
   });
@@ -33,7 +32,7 @@ export const CategoryManager = () => {
 
   const openCreateModal = () => {
     setEditingCat(null);
-    setFormData({ name: '', slug: '', description: '', image: '' });
+    setFormData({ name: '', description: '', image: '' });
     setIsModalOpen(true);
   };
 
@@ -41,7 +40,6 @@ export const CategoryManager = () => {
     setEditingCat(cat);
     setFormData({
       name: cat.name || '',
-      slug: cat.slug || '',
       description: cat.description || '',
       image: cat.image || '',
     });

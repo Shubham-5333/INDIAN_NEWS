@@ -13,8 +13,12 @@ export const newsService = {
     return await api.get(`/news?${cleanParams.toString()}`);
   },
 
-  getBySlug: async (slug) => {
-    return await api.get(`/news/${slug}`);
+  getById: async (id) => {
+    return await api.get(`/news/${id}`);
+  },
+
+  getBySlug: async (idOrSlug) => {
+    return await api.get(`/news/${idOrSlug}`);
   },
 
   create: async (newsData) => {

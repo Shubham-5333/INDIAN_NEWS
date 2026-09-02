@@ -25,7 +25,6 @@ export const CategoriesPage = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    slug: '',
     description: '',
   });
 
@@ -49,7 +48,7 @@ export const CategoriesPage = () => {
 
   const openCreateModal = () => {
     setEditingCat(null);
-    setFormData({ name: '', slug: '', description: '' });
+    setFormData({ name: '', description: '' });
     setIsModalOpen(true);
   };
 
@@ -57,7 +56,6 @@ export const CategoriesPage = () => {
     setEditingCat(cat);
     setFormData({
       name: cat.name || '',
-      slug: cat.slug || '',
       description: cat.description || '',
     });
     setIsModalOpen(true);

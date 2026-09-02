@@ -110,8 +110,19 @@ export const api = {
     }
     return res;
   },
-  getNewsBySlug: async (slug) => {
-    const res = await request(`/news/${slug}`);
+  getNewsById: async (id) => {
+    const res = await request(`/news/${id}`);
+    if (res) {
+      if (res.news) {
+        res.news.featuredImage = formatImageUrl(res.news.featuredImage);
+      } else if (res.featuredImage) {
+        res.featuredImage = formatImageUrl(res.featuredImage);
+      }
+    }
+    return res;
+  },
+  getNewsBySlug: async (idOrSlug) => {
+    const res = await request(`/news/${idOrSlug}`);
     if (res) {
       if (res.news) {
         res.news.featuredImage = formatImageUrl(res.news.featuredImage);

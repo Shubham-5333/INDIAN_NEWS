@@ -18,7 +18,6 @@ export const NewsManager = () => {
   // Form fields
   const [formData, setFormData] = useState({
     title: '',
-    slug: '',
     summary: '',
     content: '',
     category: 'Economy',
@@ -59,7 +58,6 @@ export const NewsManager = () => {
     setEditingArticle(null);
     setFormData({
       title: '',
-      slug: '',
       summary: '',
       content: '',
       category: categories[0]?.name || 'Economy',
@@ -82,7 +80,6 @@ export const NewsManager = () => {
     setEditingArticle(article);
     setFormData({
       title: article.title || '',
-      slug: article.slug || '',
       summary: article.summary || '',
       content: Array.isArray(article.content) ? article.content.join('\n\n') : article.content || '',
       category: article.category || 'Economy',
@@ -293,7 +290,6 @@ export const NewsManager = () => {
                         )}
                         <div>
                           <div className="font-semibold text-white max-w-xs md:max-w-md truncate">{item.title}</div>
-                          <div className="text-xs text-slate-400 truncate max-w-xs">{item.slug}</div>
                         </div>
                       </div>
                     </td>

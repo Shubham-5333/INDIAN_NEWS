@@ -27,7 +27,6 @@ export const NewsForm = () => {
 
   const [formData, setFormData] = useState({
     title: '',
-    slug: '',
     summary: '',
     content: '',
     category: 'General',
@@ -44,10 +43,9 @@ export const NewsForm = () => {
         setCategories(cats || []);
 
         if (isEdit) {
-          const article = await newsService.getBySlug(id);
+          const article = await newsService.getById(id);
           setFormData({
             title: article.title || '',
-            slug: article.slug || '',
             summary: article.summary || '',
             content: Array.isArray(article.content) ? article.content.join('\n\n') : article.content || '',
             category: article.category || (cats[0]?.name || 'General'),
