@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   body {
     background-color: #fbf9f8;
     color: #1b1c1c;
@@ -12,6 +17,14 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Archivo Narrow', sans-serif;
     font-weight: 700;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    word-wrap: break-word;
+  }
+
+  p, span, a, article {
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   * {
@@ -37,7 +50,7 @@
 .breaking-ticker-animation {
   display: inline-block;
   white-space: nowrap;
-  animation: ticker 20s linear infinite;
+  animation: ticker 40s linear infinite;
 }
 
 .breaking-ticker-animation:hover {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Share2, Calendar, Clock, Eye, ArrowLeft } from 'lucide-react';
 import { CommentSection } from '../components/news/CommentSection';
 import { formatImageUrl } from '../api/client';
@@ -9,9 +9,6 @@ export const ArticlePage = ({
   onSelectArticle,
   onShare,
 }) => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
   if (!article) {
     return (
       <div className="w-full flex-1 max-w-4xl mx-auto px-4 py-16 text-center font-sans">
@@ -25,14 +22,6 @@ export const ArticlePage = ({
     );
   }
 
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (email.trim()) {
-      setSubscribed(true);
-      setEmail('');
-    }
-  };
-
   const articleImgSrc = formatImageUrl(article.imageUrl || article.featuredImage);
 
   const isRawUrlCaption =
@@ -43,16 +32,14 @@ export const ArticlePage = ({
 
   return (
     <div className="w-full flex-1 bg-background font-sans text-on-surface">
-      <main className="max-w-7xl mx-auto px-container-margin py-stack-lg grid grid-cols-1 md:grid-cols-12 gap-8">
-        
-        {/* Left Column: Article Content (8 Cols) */}
-        <article className="md:col-span-8 lg:col-span-8">
+      <main className="max-w-4xl mx-auto px-container-margin py-stack-lg w-full">
+        <article className="w-full min-w-0">
           <header className="mb-stack-lg">
             <div className="inline-block bg-primary text-white text-label-caps font-label-caps px-3 py-1 mb-stack-sm uppercase">
               {article.category || 'News'}
             </div>
 
-            <h1 className="font-headline-xl text-2xl sm:text-3xl lg:text-headline-xl mb-stack-sm leading-tight text-on-surface">
+            <h1 className="font-headline-xl text-xl sm:text-2xl lg:text-3xl mb-stack-sm leading-tight text-on-surface break-words [overflow-wrap:anywhere]">
               {article.title}
             </h1>
 
@@ -115,35 +102,6 @@ export const ArticlePage = ({
           {/* Discussion */}
           <CommentSection />
         </article>
-
-        {/* Right Column: Sidebar (4 Cols) */}
-        <aside className="md:col-span-4 lg:col-span-4 space-y-stack-lg font-sans">
-          {/* Newsletter Box */}
-          <div className="border border-on-surface p-6 bg-surface-container-lowest">
-            <h3 className="font-headline-lg text-headline-lg mb-stack-sm uppercase">THE DAILY PULSE</h3>
-            <p className="font-meta-sm text-meta-sm text-secondary mb-4">Get the most authoritative news delivered to your inbox every morning at 6 AM.</p>
-            {subscribed ? (
-              <p className="text-xs font-bold text-primary">Subscribed!</p>
-            ) : (
-              <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ENTER EMAIL ADDRESS"
-                  className="border-b border-on-surface bg-transparent p-2 text-label-caps font-label-caps outline-none focus:border-primary transition-colors text-on-surface"
-                />
-                <button
-                  type="submit"
-                  className="bg-primary text-white py-3 font-bold text-label-caps font-label-caps hover:bg-red-700 transition-colors uppercase"
-                >
-                  SUBSCRIBE NOW
-                </button>
-              </form>
-            )}
-          </div>
-        </aside>
       </main>
 
       {/* Floating Action Button */}

@@ -73,9 +73,9 @@ export default {
         "sans": ["Inter", "sans-serif"],
       },
       fontSize: {
-        "headline-xl": ["36px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }],
-        "headline-lg": ["28px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "700" }],
-        "headline-lg-mobile": ["24px", { lineHeight: "28px", fontWeight: "700" }],
+        "headline-xl": ["30px", { lineHeight: "36px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "headline-lg": ["24px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "700" }],
+        "headline-lg-mobile": ["19px", { lineHeight: "24px", fontWeight: "700" }],
         "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
         "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
         "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],

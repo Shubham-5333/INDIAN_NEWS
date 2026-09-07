@@ -96,11 +96,15 @@ export const HomePage = ({
 
   return (
     <div className="w-full flex-1 font-sans">
-      {/* Breaking Ticker & Market Summary */}
-      {breakingHeadlines.length > 0 && (
-        <BreakingTicker breakingItems={breakingHeadlines} onSelectArticle={() => leadArticle && onSelectArticle(leadArticle)} />
+      {/* Breaking Ticker & Market Summary (Hidden during initial skeleton loading) */}
+      {!loading && (
+        <>
+          {breakingHeadlines.length > 0 && (
+            <BreakingTicker breakingItems={breakingHeadlines} onSelectArticle={() => leadArticle && onSelectArticle(leadArticle)} />
+          )}
+          <MarketTicker />
+        </>
       )}
-      <MarketTicker />
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-container-margin py-8">
@@ -143,7 +147,7 @@ export const HomePage = ({
             {/* Section 1: Hero & Latest Sidebar */}
             <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-6 sm:mb-8">
               {/* Main Featured Story (8 Cols) */}
-              <div className="lg:col-span-8">
+              <div className="lg:col-span-8 min-w-0 overflow-hidden">
                 {leadArticle && (
                   <ArticleCard
                     article={leadArticle}
@@ -155,13 +159,13 @@ export const HomePage = ({
               </div>
 
               {/* Latest Sidebar (4 Cols) */}
-              <div className="lg:col-span-4 flex flex-col gap-6">
+              <div className="lg:col-span-4 min-w-0 flex flex-col gap-6 overflow-hidden">
                 <div className="flex items-center gap-2 border-l-4 border-primary pl-4 mb-2">
                   <h2 className="text-headline-lg font-headline-lg italic uppercase">LATEST</h2>
                   <div className="h-[1px] flex-grow bg-outline-variant"></div>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-6 min-w-0">
                   {latestArticles.slice(0, 4).map((story) => (
                     <ArticleCard
                       key={story.id}
@@ -191,13 +195,14 @@ export const HomePage = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {mustRead.map((article) => (
-                    <ArticleCard
-                      key={article.id}
-                      article={article}
-                      variant="opinion"
-                      onSelect={onSelectArticle}
-                      onShare={onShare}
-                    />
+                    <div key={article.id} className="min-w-0">
+                      <ArticleCard
+                        article={article}
+                        variant="opinion"
+                        onSelect={onSelectArticle}
+                        onShare={onShare}
+                      />
+                    </div>
                   ))}
                 </div>
               </section>
