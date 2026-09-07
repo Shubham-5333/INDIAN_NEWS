@@ -7,22 +7,35 @@ export const formatImageUrl = (url) => {
   }
 
   const cleanUrl = url.trim();
+
+  if (cleanUrl.startsWith('data:image/') || cleanUrl.includes('cloudinary.com')) {
+    return cleanUrl;
+  }
+
   const isLocalHost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
   const localBackendHost = 'http://localhost:5001';
   const serverHost = isLocalHost ? localBackendHost : API_BASE_URL.replace(/\/api\/?$/, '');
 
-  if (cleanUrl.startsWith('/images/') || cleanUrl.startsWith('/uploads/')) {
-    return `${serverHost}${cleanUrl}`;
+  const match = cleanUrl.match(/\/?(uploads|images)\/(.+)$/i);
+  if (match) {
+    const relativePath = `/${match[1]}/${match[2]}`;
+    return `${serverHost}${relativePath}`;
   }
 
-  if (cleanUrl.includes('localhost:5001')) {
-    if (isLocalHost) {
-      return cleanUrl;
+  if (/^https?:\/\//i.test(cleanUrl)) {
+    if (cleanUrl.includes('localhost:') || cleanUrl.includes('onrender.com')) {
+      try {
+        const parsed = new URL(cleanUrl);
+        return `${serverHost}${parsed.pathname}${parsed.search}`;
+      } catch {
+        return cleanUrl;
+      }
     }
-    return cleanUrl.replace(/http:\/\/localhost:5001/g, serverHost);
+    return cleanUrl;
   }
 
-  return cleanUrl;
+  const formattedPath = cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`;
+  return `${serverHost}${formattedPath}`;
 };
 
 export const getAuthToken = () => localStorage.getItem('adminToken');
