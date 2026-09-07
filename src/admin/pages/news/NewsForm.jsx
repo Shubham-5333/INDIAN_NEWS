@@ -72,7 +72,6 @@ export const NewsForm = () => {
     setFormData((prev) => ({
       ...prev,
       title,
-      slug: !isEdit ? title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '') : prev.slug,
       seoTitle: !isEdit ? title : prev.seoTitle,
     }));
   };
@@ -100,7 +99,6 @@ export const NewsForm = () => {
 
       const payload = {
         title: formData.title,
-        slug: formData.slug || formData.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, ''),
         summary: formData.summary,
         content: formData.content,
         category: formData.category,

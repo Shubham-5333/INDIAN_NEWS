@@ -119,7 +119,6 @@ export const NewsManager = () => {
     try {
       const payload = {
         title: formData.title,
-        slug: formData.slug,
         summary: formData.summary,
         content: formData.content,
         category: formData.category,
@@ -384,20 +383,6 @@ export const NewsManager = () => {
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="Enter breaking news or article headline"
                     className="w-full bg-slate-900 border border-slate-700 focus:border-red-500 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none"
-                  />
-                </div>
-
-                {/* Slug */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                    URL Slug (Auto-generated if empty)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    placeholder="e.g. rbi-policy-rates-2026"
-                    className="w-full bg-slate-900 border border-slate-700 focus:border-red-500 text-white rounded-lg px-4 py-2 text-sm focus:outline-none"
                   />
                 </div>
 

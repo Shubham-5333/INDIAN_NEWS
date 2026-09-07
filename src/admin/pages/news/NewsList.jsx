@@ -103,7 +103,7 @@ export const NewsList = () => {
       render: (row) => (
         <div>
           <div className="font-semibold text-white max-w-xs md:max-w-md truncate">{row.title}</div>
-          <div className="text-xs text-slate-400 truncate max-w-xs">{row.summary || row.slug}</div>
+          <div className="text-xs text-slate-400 truncate max-w-xs">{row.summary || row.category}</div>
         </div>
       ),
     },
