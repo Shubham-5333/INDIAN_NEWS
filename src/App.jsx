@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -9,6 +9,7 @@ import { HomePage } from './pages/HomePage.jsx';
 import { VideoFeedPage } from './pages/VideoFeedPage.jsx';
 import { SearchPage } from './pages/SearchPage.jsx';
 import { ArticlePage } from './pages/ArticlePage.jsx';
+import { api, formatImageUrl } from './api/client.js';
 
 // Dedicated Admin Router import
 import { AdminAppRoutes } from './admin/routes/AdminRoutes.jsx';
@@ -16,28 +17,116 @@ import { AdminAppRoutes } from './admin/routes/AdminRoutes.jsx';
 function PublicApp() {
   const [activePage, setActivePage] = useState('home');
   const [selectedArticle, setSelectedArticle] = useState(null);
+  const [articleLoading, setArticleLoading] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [categories, setCategories] = useState(['All']);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [shareArticle, setShareArticle] = useState(null);
+
+  // Load only categories fetched from DB
+  useEffect(() => {
+    api.getCategories()
+      .then((res) => {
+        if (Array.isArray(res)) {
+          const names = res.map((c) => (typeof c === 'string' ? c : c.name)).filter(Boolean);
+          setCategories(['All', ...names]);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load categories:', err);
+      });
+  }, []);
+
+  // Check URL on mount or back/forward navigation for ?article=<id>
+  useEffect(() => {
+    const checkUrlForArticle = () => {
+      const params = new URLSearchParams(window.location.search);
+      const articleId = params.get('article');
+      if (articleId) {
+        setArticleLoading(true);
+        setActivePage('article');
+        api.getNewsById(articleId)
+          .then((res) => {
+            const item = res?.news || res;
+            if (item && (item._id || item.id)) {
+              setSelectedArticle({
+                ...item,
+                id: item._id || item.id,
+                imageUrl: formatImageUrl(item.featuredImage || item.imageUrl || ''),
+              });
+            }
+          })
+          .catch((err) => {
+            console.error('Failed to load shared article:', err);
+          })
+          .finally(() => {
+            setArticleLoading(false);
+          });
+      }
+    };
+
+    checkUrlForArticle();
+
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const articleId = params.get('article');
+      if (articleId) {
+        checkUrlForArticle();
+      } else {
+        setActivePage('home');
+        setSelectedArticle(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateToPage = (pageName) => {
+    setActivePage(pageName);
+    if (pageName !== 'article') {
+      const url = new URL(window.location.href);
+      if (url.searchParams.has('article')) {
+        url.searchParams.delete('article');
+        window.history.pushState({}, '', url.pathname);
+      }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleSelectArticle = (article) => {
     setSelectedArticle(article);
     setActivePage('article');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    const artId = article?.id || article?._id;
+    if (artId) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('article', artId);
+      window.history.pushState({}, '', url.toString());
+    }
+  };
+
+  const handleBackFromArticle = () => {
+    setActivePage('home');
+    setSelectedArticle(null);
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('article')) {
+      url.searchParams.delete('article');
+      window.history.pushState({}, '', url.pathname);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectVideo = (video) => {
     setSelectedVideo(video);
-    setActivePage('video');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigateToPage('video');
   };
 
   const handleSelectCategory = (category) => {
     setSelectedCategory(category);
-    setActivePage('search');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigateToPage('search');
   };
 
   const handleOpenShare = (article) => {
@@ -50,12 +139,12 @@ function PublicApp() {
       {/* Header */}
       <Header
         activePage={activePage}
-        setActivePage={setActivePage}
+        setActivePage={navigateToPage}
         onSelectCategory={handleSelectCategory}
         onOpenDrawer={() => setIsDrawerOpen(true)}
         onOpenSearch={() => {
           setSelectedCategory('All');
-          setActivePage('search');
+          navigateToPage('search');
         }}
       />
 
@@ -63,8 +152,9 @@ function PublicApp() {
       <NavigationDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        setActivePage={setActivePage}
+        setActivePage={navigateToPage}
         onSelectCategory={handleSelectCategory}
+        categories={categories}
       />
 
       {/* Share Modal */}
@@ -92,6 +182,7 @@ function PublicApp() {
         {activePage === 'search' && (
           <SearchPage
             initialCategory={selectedCategory}
+            availableCategories={categories}
             onSelectArticle={handleSelectArticle}
             onShare={handleOpenShare}
           />
@@ -100,7 +191,8 @@ function PublicApp() {
         {activePage === 'article' && (
           <ArticlePage
             article={selectedArticle}
-            onBack={() => setActivePage('home')}
+            loading={articleLoading}
+            onBack={handleBackFromArticle}
             onSelectArticle={handleSelectArticle}
             onShare={handleOpenShare}
           />
@@ -108,12 +200,12 @@ function PublicApp() {
       </div>
 
       {/* Footer */}
-      <Footer setActivePage={setActivePage} />
+      <Footer setActivePage={navigateToPage} />
 
       {/* Mobile Bottom Navigation */}
       <MobileNav
         activePage={activePage}
-        setActivePage={setActivePage}
+        setActivePage={navigateToPage}
         onSelectCategory={handleSelectCategory}
       />
     </div>

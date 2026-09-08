@@ -5,10 +5,20 @@ import { formatImageUrl } from '../api/client';
 
 export const ArticlePage = ({
   article,
+  loading = false,
   onBack,
   onSelectArticle,
   onShare,
 }) => {
+  if (loading && !article) {
+    return (
+      <div className="w-full flex-1 max-w-4xl mx-auto px-4 py-20 text-center font-sans">
+        <div className="inline-block animate-spin w-8 h-8 border-4 border-primary border-t-transparent mb-4"></div>
+        <p className="text-secondary text-sm font-headline uppercase font-bold tracking-wider">Loading Story...</p>
+      </div>
+    );
+  }
+
   if (!article) {
     return (
       <div className="w-full flex-1 max-w-4xl mx-auto px-4 py-16 text-center font-sans">

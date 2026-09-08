@@ -31,6 +31,7 @@ export const SearchPage = ({
   initialCategory = 'All',
   onSelectArticle,
   onShare,
+  availableCategories,
 }) => {
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
@@ -46,7 +47,17 @@ export const SearchPage = ({
   const [sortBy, setSortBy] = useState('latest'); // latest, oldest, popular, title
   const [viewMode, setViewMode] = useState('list'); // list, grid
   const [showFilters, setShowFilters] = useState(true);
-  const [dynamicCategories, setDynamicCategories] = useState([]);
+  const [dynamicCategories, setDynamicCategories] = useState(
+    Array.isArray(availableCategories) && availableCategories.length > 1
+      ? availableCategories.filter((c) => c !== 'All')
+      : []
+  );
+
+  useEffect(() => {
+    if (Array.isArray(availableCategories) && availableCategories.length > 1) {
+      setDynamicCategories(availableCategories.filter((c) => c !== 'All'));
+    }
+  }, [availableCategories]);
   
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,16 +65,18 @@ export const SearchPage = ({
 
   const trendingTags = ['QUANTUM', 'SCANDINAVIA', 'MARKETS', 'SPORTS', 'AI ETHICS', 'DESIGN', 'POLITICS', 'CLIMATE'];
 
-  // Categories definition
-  const bentoCategories = [
-    { name: 'All', label: 'ALL NEWS', icon: Newspaper, color: 'hover:border-primary' },
-    { name: 'Politics', label: 'POLITICS', icon: Landmark, color: 'hover:border-red-600' },
-    { name: 'Economy', label: 'ECONOMY', icon: TrendingUp, color: 'hover:border-emerald-600' },
-    { name: 'Tech', label: 'TECH', icon: Smartphone, color: 'hover:border-blue-600' },
-    { name: 'Environment', label: 'ENVIRONMENT', icon: Leaf, color: 'hover:border-green-600' },
-    { name: 'Global Technology', label: 'GLOBAL TECH', icon: Globe, color: 'hover:border-purple-600' },
-    { name: 'Opinion', label: 'OPINION', icon: Award, color: 'hover:border-amber-600' },
-  ];
+  const getCategoryMeta = (catName) => {
+    const upper = (catName || '').toUpperCase();
+    if (upper === 'ALL') return { label: 'ALL NEWS', icon: Newspaper, color: 'hover:border-primary' };
+    if (upper.includes('POLITIC')) return { label: catName.toUpperCase(), icon: Landmark, color: 'hover:border-red-600' };
+    if (upper.includes('TECH')) return { label: catName.toUpperCase(), icon: Smartphone, color: 'hover:border-blue-600' };
+    if (upper.includes('SPORT')) return { label: catName.toUpperCase(), icon: Award, color: 'hover:border-amber-600' };
+    if (upper.includes('FINANCE') || upper.includes('STOCK') || upper.includes('ECONOM')) return { label: catName.toUpperCase(), icon: TrendingUp, color: 'hover:border-emerald-600' };
+    if (upper.includes('ENTERTAIN')) return { label: catName.toUpperCase(), icon: Sparkles, color: 'hover:border-purple-600' };
+    if (upper.includes('WORLD') || upper.includes('GULF') || upper.includes('INDIA') || upper.includes('KERALAM')) return { label: catName.toUpperCase(), icon: Globe, color: 'hover:border-cyan-600' };
+    if (upper.includes('OPINION')) return { label: catName.toUpperCase(), icon: Award, color: 'hover:border-amber-600' };
+    return { label: catName.toUpperCase(), icon: Newspaper, color: 'hover:border-primary' };
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -178,14 +191,12 @@ export const SearchPage = ({
     return 0;
   });
 
-  // Unique Categories computed from current articles
-  const availableCategorySet = new Set([
-    'All',
-    ...bentoCategories.map((c) => c.name),
-    ...articles.map((a) => a.category).filter(Boolean),
-    ...dynamicCategories,
-  ]);
-  const allCategories = Array.from(availableCategorySet);
+  // Only categories fetched from DB (+ 'All')
+  const allCategories = ['All', ...dynamicCategories];
+  const bentoCategories = allCategories.map((name) => ({
+    name,
+    ...getCategoryMeta(name),
+  }));
 
   const hasActiveFilters =
     query.trim() !== '' ||
@@ -265,7 +276,7 @@ export const SearchPage = ({
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-2">
           {bentoCategories.map((cat) => {
             const Icon = cat.icon;
             const isSelected = selectedCategory.toLowerCase() === cat.name.toLowerCase();

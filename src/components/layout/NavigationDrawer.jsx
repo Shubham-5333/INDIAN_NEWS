@@ -1,25 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ChevronRight, Radio, Globe, ShieldCheck } from 'lucide-react';
+import { api } from '../../api/client';
 
 export const NavigationDrawer = ({
   isOpen,
   onClose,
   setActivePage,
   onSelectCategory,
+  categories: propCategories,
 }) => {
-  if (!isOpen) return null;
+  const [categories, setCategories] = useState(propCategories || ['All']);
 
-  const categories = [
-    'All',
-    'Politics',
-    'Economy',
-    'Tech',
-    'Sports',
-    'India',
-    'World',
-    'Opinion',
-    'Environment'
-  ];
+  useEffect(() => {
+    if (propCategories && propCategories.length > 1) {
+      setCategories(propCategories);
+    } else {
+      api.getCategories()
+        .then((res) => {
+          if (Array.isArray(res)) {
+            const names = res.map((c) => (typeof c === 'string' ? c : c.name)).filter(Boolean);
+            setCategories(['All', ...names]);
+          }
+        })
+        .catch((err) => {
+          console.error('Error fetching categories for drawer:', err);
+        });
+    }
+  }, [propCategories]);
+
+  if (!isOpen) return null;
 
   const handleCategoryClick = (cat) => {
     if (onSelectCategory) {

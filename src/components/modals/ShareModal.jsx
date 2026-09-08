@@ -6,10 +6,11 @@ export const ShareModal = ({ isOpen, onClose, article }) => {
 
   if (!isOpen || !article) return null;
 
-  const currentUrl = window.location.href;
+  const articleId = article.id || article._id;
+  const shareUrl = `${window.location.origin}/?article=${articleId}`;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`${currentUrl}#article-${article.id}`);
+    navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
@@ -47,7 +48,7 @@ export const ShareModal = ({ isOpen, onClose, article }) => {
             <input
               type="text"
               readOnly
-              value={`${currentUrl}#article-${article.id}`}
+              value={shareUrl}
               className="bg-surface border border-surface-container-highest px-3 py-2 text-xs font-mono text-secondary flex-1 truncate"
             />
             <button
@@ -65,7 +66,7 @@ export const ShareModal = ({ isOpen, onClose, article }) => {
           <label className="block text-xs font-bold text-secondary uppercase font-headline mb-2">Share via Platform</label>
           <div className="grid grid-cols-4 gap-2 text-center text-xs font-headline font-bold">
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(shareUrl)}`}
               target="_blank"
               rel="noreferrer"
               className="p-3 bg-neutral-900 text-white hover:bg-black flex flex-col items-center gap-1 transition-colors"
@@ -74,7 +75,7 @@ export const ShareModal = ({ isOpen, onClose, article }) => {
               <span>X</span>
             </a>
             <a
-              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(article.title)}`}
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${article.title}\n\nRead full story:\n${shareUrl}`)}`}
               target="_blank"
               rel="noreferrer"
               className="p-3 bg-emerald-800 text-white hover:bg-emerald-900 flex flex-col items-center gap-1 transition-colors"
@@ -83,7 +84,7 @@ export const ShareModal = ({ isOpen, onClose, article }) => {
               <span>WhatsApp</span>
             </a>
             <a
-              href={`https://www.linkedin.com/shareArticle?mini=true&title=${encodeURIComponent(article.title)}`}
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
               target="_blank"
               rel="noreferrer"
               className="p-3 bg-blue-800 text-white hover:bg-blue-900 flex flex-col items-center gap-1 transition-colors"
@@ -92,7 +93,7 @@ export const ShareModal = ({ isOpen, onClose, article }) => {
               <span>LinkedIn</span>
             </a>
             <a
-              href={`mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(article.summary)}`}
+              href={`mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(`${article.summary || article.title}\n\nRead full story:\n${shareUrl}`)}`}
               className="p-3 bg-neutral-800 text-white hover:bg-neutral-700 flex flex-col items-center gap-1 transition-colors"
             >
               <Mail size={18} />
