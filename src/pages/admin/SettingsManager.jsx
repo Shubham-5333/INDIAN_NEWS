@@ -8,7 +8,7 @@ export const SettingsManager = () => {
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
-    websiteName: 'INDIAN NEWS',
+    websiteName: 'BREAKING HOURS',
     logo: '',
     favicon: '',
     footerText: '',
@@ -31,7 +31,7 @@ export const SettingsManager = () => {
         const data = await api.getSettings();
         if (data) {
           setFormData({
-            websiteName: data.websiteName || 'INDIAN NEWS',
+            websiteName: data.websiteName || 'BREAKING HOURS',
             logo: data.logo || '',
             favicon: data.favicon || '',
             footerText: data.footerText || '',

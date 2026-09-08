@@ -29,7 +29,7 @@ export const Header = ({
             className="cursor-pointer select-none"
           >
             <h1 className="text-xl sm:text-2xl md:text-headline-xl font-headline-xl italic font-black text-primary tracking-tighter uppercase leading-none whitespace-nowrap">
-              INDIAN <span className="text-on-surface">NEWS</span>
+              BREAKING <span className="text-on-surface">HOURS</span>
             </h1>
           </div>
         </div>

@@ -64,7 +64,7 @@ export const AdminLayout = ({ onLogout }) => {
               <ShieldCheck size={22} />
             </div>
             <div>
-              <span className="font-extrabold uppercase tracking-wider text-base text-white">INDIAN NEWS</span>
+              <span className="font-extrabold uppercase tracking-wider text-base text-white">BREAKING HOURS</span>
               <span className="ml-2 text-[10px] bg-red-950 text-red-400 border border-red-800 px-2 py-0.5 rounded font-bold tracking-widest uppercase">
                 ADMIN PANEL
               </span>

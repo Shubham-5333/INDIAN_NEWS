@@ -40,7 +40,7 @@ export const AdminLogin = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-600/20 text-red-500 mb-4 border border-red-500/30">
             <ShieldCheck size={36} />
           </div>
-          <h1 className="text-2xl font-bold uppercase tracking-wider text-white">INDIAN NEWS</h1>
+          <h1 className="text-2xl font-bold uppercase tracking-wider text-white">BREAKING HOURS</h1>
           <p className="text-slate-400 text-sm mt-1">Admin Portal Authentication</p>
         </div>
 

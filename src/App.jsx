@@ -200,7 +200,15 @@ function PublicApp() {
       </div>
 
       {/* Footer */}
-      <Footer setActivePage={navigateToPage} />
+      <Footer
+        setActivePage={navigateToPage}
+        categories={categories}
+        onSelectCategory={handleSelectCategory}
+        onOpenSearch={() => {
+          setSelectedCategory('All');
+          navigateToPage('search');
+        }}
+      />
 
       {/* Mobile Bottom Navigation */}
       <MobileNav

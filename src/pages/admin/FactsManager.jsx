@@ -15,7 +15,7 @@ export const FactsManager = () => {
     category: 'General',
     featured: false,
     status: 'published',
-    source: 'Indian News Research Desk',
+    source: 'Breaking Hours Research Desk',
   });
 
   const fetchData = async () => {
@@ -46,7 +46,7 @@ export const FactsManager = () => {
       category: categories[0]?.name || 'General',
       featured: false,
       status: 'published',
-      source: 'Indian News Research Desk',
+      source: 'Breaking Hours Research Desk',
     });
     setIsModalOpen(true);
   };
@@ -59,7 +59,7 @@ export const FactsManager = () => {
       category: fact.category || 'General',
       featured: Boolean(fact.featured),
       status: fact.status || 'published',
-      source: fact.source || 'Indian News Research Desk',
+      source: fact.source || 'Breaking Hours Research Desk',
     });
     setIsModalOpen(true);
   };

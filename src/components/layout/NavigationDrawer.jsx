@@ -52,7 +52,7 @@ export const NavigationDrawer = ({
         <div className="p-5 bg-black border-b border-neutral-800 flex items-center justify-between">
           <div>
             <h2 className="font-headline font-black text-2xl tracking-tight uppercase text-white">
-              INDIAN <span className="text-primary">NEWS</span>
+              BREAKING <span className="text-primary">HOURS</span>
             </h2>
             <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest mt-0.5">
               SECTIONS & SERVICES
@@ -121,14 +121,14 @@ export const NavigationDrawer = ({
               <span>EDITORIAL STANDARDS</span>
             </div>
             <p className="leading-relaxed">
-              INDIAN NEWS operates under strict independent oversight and non-partisan journalistic integrity.
+              BREAKING HOURS operates under strict independent oversight and non-partisan journalistic integrity.
             </p>
           </div>
         </div>
 
         {/* Footer */}
         <div className="p-4 bg-black border-t border-neutral-800 text-center text-[10px] text-neutral-500 font-sans">
-          © 2026 INDIAN NEWS NETWORK
+          © 2026 BREAKING HOURS NETWORK
         </div>
       </div>
     </div>

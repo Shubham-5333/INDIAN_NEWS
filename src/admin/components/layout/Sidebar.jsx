@@ -37,7 +37,7 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, isMobileOpen, onCloseMo
           </div>
           {!isCollapsed && (
             <div className="truncate">
-              <span className="font-extrabold uppercase tracking-wider text-sm text-white block">INDIAN NEWS</span>
+              <span className="font-extrabold uppercase tracking-wider text-sm text-white block">BREAKING HOURS</span>
               <span className="text-[10px] bg-red-950 text-red-400 border border-red-800 px-2 py-0.5 rounded font-bold tracking-widest uppercase inline-block mt-0.5">
                 ADMIN PANEL
               </span>

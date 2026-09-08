@@ -16,7 +16,7 @@ export const SettingsPage = () => {
   const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
-    websiteName: 'INDIAN NEWS',
+    websiteName: 'BREAKING HOURS',
     logo: '',
     favicon: '',
     footerText: '',
@@ -39,7 +39,7 @@ export const SettingsPage = () => {
         const data = await settingsService.getSettings();
         if (data) {
           setFormData({
-            websiteName: data.websiteName || 'INDIAN NEWS',
+            websiteName: data.websiteName || 'BREAKING HOURS',
             logo: data.logo || '',
             favicon: data.favicon || '',
             footerText: data.footerText || '',

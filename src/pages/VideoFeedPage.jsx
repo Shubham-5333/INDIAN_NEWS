@@ -58,7 +58,7 @@ export const VideoFeedPage = ({ selectedVideo }) => {
               VIDEO FEED
             </h2>
             <p className="text-on-secondary-container font-meta-sm text-meta-sm max-w-xl mt-1">
-              Curated visual journalism and video broadcasts from Indian News.
+              Curated visual journalism and video broadcasts from Breaking Hours.
             </p>
           </div>
         </div>
